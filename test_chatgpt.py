@@ -104,6 +104,8 @@ def main():
           driver.find_element(By.XPATH, '//*[@id="contentfulModalClose"]').click()
       driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button').click()
       element_xpath = '/html/body/app-root/ngb-modal-window/div/div/div'
+  elif brand == 'vizio':
+    element_xpath = '//*[@id="main-content"]/div/div/div/div/div[3]/tech-specs-element/div/div[2]'
 
 
   tv_specs = driver.find_element(By.XPATH, element_xpath).get_attribute('textContent')
