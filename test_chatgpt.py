@@ -6,7 +6,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from openai import OpenAI
 from selenium.common.exceptions import NoSuchElementException
 
-API_KEY = open("API_KEY", "r").read()
+API_KEY = open("API_KEY.txt", "r").read()
 DRIVER_PATH = 'chromedriver-win64/chromedriver.exe'
 client = OpenAI(api_key= API_KEY)
 service = Service(executable_path=DRIVER_PATH)
