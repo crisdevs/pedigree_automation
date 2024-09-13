@@ -46,7 +46,7 @@ def generate_url(brand, model):
         'vizio': f'https://www.vizio.com/en/tv/4k/{model}',
         'hisense': f'https://www.hisense-usa.com/televisions',
         'roku': 'https://www.roku.com/products/roku-tv/roku-made-tvs',
-        'tcl': f'https://www.tcl.com/us/en/search?search={model}'
+        'tcl': f'https://www.tcl.com/us/en/search?search={model}#cmp-tabs'
         }
     #If tv brand is not found in current dictionary
     if tvs.get(brand) == None :
@@ -106,6 +106,10 @@ def main():
       element_xpath = '/html/body/app-root/ngb-modal-window/div/div/div'
   elif brand == 'vizio':
     element_xpath = '//*[@id="main-content"]/div/div/div/div/div[3]/tech-specs-element/div/div[2]'
+  elif brand == 'tcl':
+      driver.find_element(By.XPATH, '//*[@id="search-results"]/div/h4/a').click()
+      driver.find_element(By.XPATH, '//*[@id="cmp-tabs"]/div[1]/div/ol/li[2]').click()
+      element_xpath = '//*[@id="cmp-tabs"]/div[3]/div/div/div'
 
 
   tv_specs = driver.find_element(By.XPATH, element_xpath).get_attribute('textContent')
