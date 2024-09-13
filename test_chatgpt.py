@@ -113,7 +113,7 @@ def main():
 
 
   tv_specs = driver.find_element(By.XPATH, element_xpath).get_attribute('textContent')
-  
+  final_url = driver.current_url
   print(f'This is the tv specs {tv_specs}')
   completion = client.chat.completions.create(
       model="gpt-4o-mini",
@@ -131,10 +131,12 @@ def main():
   pedigree_specs = pedigree_specs.split(",")
   insertMultiple(pedigree_specs, 1, " ", 2)
   insertMultiple(pedigree_specs, 4, " ", 2)
+#   insertMultiple(pedigree_specs, -1, " ", 17)
+#   pedigree_specs.insert(len(pedigree_specs), final_url)
   pedigree_specs = "\t".join(pedigree_specs)
   print(pedigree_specs)
   pyperclip.copy(f"{pedigree_specs}")
   print("Specs were copied please paste the results into the tv workbook")
-
+  print(f'This is the url used\n{final_url}')
   driver.quit()
 main()
