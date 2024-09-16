@@ -24,6 +24,10 @@ def check_exists_by_xpath(xpath, driver):
         return False
     return True
 
+def url_check (url):
+    response = requests.get(url)
+    print(response.status_code)
+
 def generate_url(brand, model):
     final_URL = None
     #URL has model as uppercases and includes dashes
@@ -49,9 +53,10 @@ def generate_url(brand, model):
         'tcl': f'https://www.tcl.com/us/en/search?search={model}#cmp-tabs'
         }
     #If tv brand is not found in current dictionary
-    if tvs.get(brand) == None :
-        return None
-
+    # if tvs.get(brand) == None :
+    #     finalURL = input('URL not found please enter URL for TV under test\n')
+    #     return finalURL
+    finalURL = tvs[brand]
     if brand == 'lg':
         series = None
         #Checks in model name what kind of tv
@@ -61,19 +66,11 @@ def generate_url(brand, model):
             series = 'qned'
         else:
             series = 'uhd'
-        #Assigns this variable to the nested dictionary
-        finalURL = tvs[brand]
         #For LG only
-        return {
-            'google': f'https://www.google.com/search?q={brand}+{model}',
-            'website': finalURL[series]
-        }
+        return finalURL[series]
 
     #For every other brand
-    return {
-        'google': f'https://www.google.com/search?q={brand}+{model}',
-        'website': tvs[brand]
-        }
+    return finalURL
     
 
 
@@ -84,10 +81,11 @@ def main():
   model = tv.split()[1]
   print(f'This is the brand: {brand} and the model is {model}')
   tv_link = generate_url(brand, model)
+#   url_check(tv_link)
   # Open chrome window
   driver = webdriver.Chrome(service=service, options=options)
   # # Navigate to the link that was entered by the user
-  driver.get(tv_link['website'])
+  driver.get(tv_link)
   time.sleep(5)
   element_xpath = None
   
@@ -134,6 +132,7 @@ def main():
 #   insertMultiple(pedigree_specs, -1, " ", 17)
 #   pedigree_specs.insert(len(pedigree_specs), final_url)
   pedigree_specs = "\t".join(pedigree_specs)
+  pedigree_specs = pedigree_specs.strip()
   print(pedigree_specs)
   pyperclip.copy(f"{pedigree_specs}")
   print("Specs were copied please paste the results into the tv workbook")
