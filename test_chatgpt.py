@@ -132,7 +132,6 @@ def main():
 #   insertMultiple(pedigree_specs, -1, " ", 17)
 #   pedigree_specs.insert(len(pedigree_specs), final_url)
   pedigree_specs = "\t".join(pedigree_specs)
-  pedigree_specs = pedigree_specs.strip()
   print(pedigree_specs)
   pyperclip.copy(f"{pedigree_specs}")
   print("Specs were copied please paste the results into the tv workbook")
