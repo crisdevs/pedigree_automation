@@ -119,21 +119,28 @@ def main():
           {"role": "system", "content": "You are a helpful assistant."},
           {
               "role": "user",
-              "content": f"Here is some unfiltered data here:{tv_specs}. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this an OLED panel (Can only answer 'OLED' or 'LCD (LED)' or 'NS' if you can't find it). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Has ATSC 3 or Nextgen TV feature (Answer Yes or No if not found). Question 12: Has Variable Refresh Rate feature (Answer Yes or No if not found). Question 13:Has any form of FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Has any form of G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard (Can only answer: 802.11n/WiFi 4,802.11ac/WiFi 5, 802.11ax/WiFi 6, 802.11ax/WiFi 6E and if not found answer 'NS' for this question)."
+              "content": f"Here is some unfiltered data here:{tv_specs}. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this an OLED panel (Can only answer 'OLED' or 'LCD (LED)' or 'NS' if you can't find it). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Has ATSC 3 or Nextgen TV feature (Answer Yes or No if not found). Question 12: Has Variable Refresh Rate feature (Answer Yes or No if not found). Question 13:Has any form of FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Has any form of G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard (Can only answer: 802.11n/WiFi 4,802.11ac/WiFi 5, 802.11ax/WiFi 6, 802.11ax/WiFi 6E and if not found answer 'NS' for this question. Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No'))."
           }
       ]
     )
   
   print(completion.choices[0].message.content)
-  pedigree_specs = completion.choices[0].message.content
-  pedigree_specs = pedigree_specs.split(",")
-  insertMultiple(pedigree_specs, 1, " ", 2)
-  insertMultiple(pedigree_specs, 4, " ", 2)
-#   insertMultiple(pedigree_specs, -1, " ", 17)
-#   pedigree_specs.insert(len(pedigree_specs), final_url)
-  pedigree_specs = "\t".join(pedigree_specs)
-  print(pedigree_specs)
-  pyperclip.copy(f"{pedigree_specs}")
+  pedigree_specs_arr = completion.choices[0].message.content.split(",")
+  final_pedigree_specs_arr = []
+  for i in pedigree_specs_arr:
+      if i[0] == " ":
+          final_pedigree_specs_arr.append(i[1:])
+      else:
+          final_pedigree_specs_arr.append(i)
+
+  insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
+  insertMultiple(final_pedigree_specs_arr, 4, " ", 2)
+  final_pedigree_specs_arr.insert(len(final_pedigree_specs_arr), final_url)
+  insertMultiple(final_pedigree_specs_arr, 19, " ", 11)
+  insertMultiple(final_pedigree_specs_arr, 31, " ", 5)
+  final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
+#   print(pedigree_specs)
+  pyperclip.copy(f"{final_pedigree_specs}")
   print("Specs were copied please paste the results into the tv workbook")
   print(f'This is the url used\n{final_url}')
   driver.quit()
