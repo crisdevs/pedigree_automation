@@ -34,50 +34,6 @@ def url_check (url):
     print(response.status_code)
     return response.status_code == 200
 
-# def generate_url(brand, model):
-#     final_URL = None
-#     #URL has model as uppercases and includes dashes
-#     # if brand == "vizio" or brand == "tcl":
-#     #         model = model.upper()
-#     # else:
-#     #         #Make model number all lower case
-#     #         model = model.lower()
-#     #         #Remove dashes in model number
-#     #         model = model.replace("-","")
-
-#     # tvs = {
-#     #     'lg': {
-#     #         'uhd':f'https://www.lg.com/us/tvs/lg-{model}-4k-uhd-tv#pdp_specs',
-#     #         'oled':f'https://www.lg.com/us/tvs/lg-{model}-oled-4k-tv#pdp_specs',
-#     #         'qned': f'https://www.lg.com/us/tvs/lg-{model}-qned-4k-tv#pdp_specs'
-#     #         },
-#     #     'samsung': f'https://www.samsung.com/us/search/searchMain/?search={model}#',
-#     #     'sony': f'https://electronics.sony.com/tv-video/televisions/all-tvs/p/{model}',
-#     #     'vizio': f'https://www.vizio.com/en/tv/4k/{model}',
-#     #     'hisense': f'https://www.hisense-usa.com/televisions',
-#     #     'roku': 'https://www.roku.com/products/roku-tv/roku-made-tvs',
-#     #     'tcl': f'https://www.tcl.com/us/en/search?search={model}#cmp-tabs'
-#     #     }
-#     #If tv brand is not found in current dictionary
-#     # if tvs.get(brand) == None :
-#     #     finalURL = input('URL not found please enter URL for TV under test\n')
-#     #     return finalURL
-#     finalURL = tvs[brand]
-#     if brand == 'lg':
-#         series = None
-#         #Checks in model name what kind of tv
-#         if model[:4] == "oled":
-#             series = 'oled'
-#         elif model[2:6] == 'qned':
-#             series = 'qned'
-#         else:
-#             series = 'uhd'
-#         #For LG only
-#         return finalURL[series]
-
-#     #For every other brand
-#     return finalURL
-
 def navigate_to_url(xpath_arr, driver):
     for i in xpath_arr:
         driver.find_element(By.XPATH, i).click()
@@ -178,11 +134,6 @@ def main():
     'tcl': tcl,
     'hisense': hisense
 }
-  # Open chrome window
-#   is_url_valid = url_check(tv_link)
-#   url_checked = tv_link
-#   if not is_url_valid:
-#       url_checked = input('Website stored came back with a 404 please enter valid website\n')
   print(tv_link)
   driver = webdriver.Chrome(service=service, options=options)
   driver.get(tv_link)
@@ -198,7 +149,7 @@ def main():
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this an OLED panel (Can only answer 'OLED' or 'LCD (LED)' or 'NS' if you can't find it). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Has ATSC 3 or Nextgen TV feature (Answer Yes or No if not found). Question 12: Has Variable Refresh Rate feature (Answer Yes or No if not found). Question 13:Has any form of FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Has any form of G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard (Can only answer: 802.11n/WiFi 4,802.11ac/WiFi 5, 802.11ax/WiFi 6, 802.11ax/WiFi 6E and if not found answer 'NS' for this question. Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No'))."
+                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this an OLED panel (Can only answer 'OLED' or 'LCD (LED)' or 'NS' if you can't find it). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Has ATSC 3 or Nextgen TV feature (Answer Yes or No if not found). Question 12: Has Variable Refresh Rate feature (Answer Yes or No if not found). Question 13:Has any form of FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Has any form of G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E' and if not found answer 'NS' for this question. Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No'))."
             }
         ]
         )
@@ -220,9 +171,4 @@ def main():
   print("Specs were copied please paste the results into the tv workbook")
   driver.quit()
 
-    
-
-  
-  
-  
 main()
