@@ -93,9 +93,9 @@ def sony(driver):
     if check_exists_by_xpath('//*[@id="contentfulModalClose"]', driver):
         driver.find_element(By.XPATH, '//*[@id="contentfulModalClose"]').click()  
     if check_exists_by_xpath('//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button', driver):
-        body = driver.find_element(By.TAG_NAME, 'body')  
-        body.send_keys(Keys.PAGE_DOWN)
-        body.send_keys(Keys.PAGE_DOWN)
+        # body = driver.find_element(By.TAG_NAME, 'body')  
+        # body.send_keys(Keys.PAGE_DOWN)
+        # body.send_keys(Keys.PAGE_DOWN)
         time.sleep(5)
         driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button').click()
  
