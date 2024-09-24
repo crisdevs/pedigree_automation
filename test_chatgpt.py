@@ -95,7 +95,7 @@ def get_url(brand, model):
     
     # Perform Google search
     search_results = google_search(query, GOOGLE_API_KEY, CSE_ID)
-    print(search_results)
+    # print(search_results)
     if not search_results:
         print("No relevant search results found.")
         return
@@ -124,7 +124,7 @@ def main():
   tv = input("Please enter brand and model\n")
   brand = tv.split()[0].lower()
   model = tv.split()[1]
-  print(f'This is the brand: {brand} and the model is {model}')
+#   print(f'This is the brand: {brand} and the model is {model}')
   tv_link = get_url(brand, model)
   tv_dict = {
     'lg':lg,
@@ -134,7 +134,7 @@ def main():
     'tcl': tcl,
     'hisense': hisense
 }
-  print(tv_link)
+#   print(tv_link)
   driver = webdriver.Chrome(service=service, options=options)
   driver.get(tv_link)
   time.sleep(5)
@@ -142,18 +142,18 @@ def main():
   spec_xpath = tv_func(driver)
   tv_specs = driver.find_element(By.XPATH, spec_xpath).get_attribute('textContent')
   final_url = driver.current_url
-  print(tv_specs + '\n\n\n\n')
+#   print(tv_specs + '\n\n\n\n')
   completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this an OLED panel (Can only answer 'OLED' or 'LCD (LED)' or 'NS' if you can't find it). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Has ATSC 3 or Nextgen TV feature (Answer Yes or No if not found). Question 12: Has Variable Refresh Rate feature (Answer Yes or No if not found). Question 13:Has any form of FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Has any form of G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E' and if not found answer 'NS' for this question. Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No'))."
+                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this TV an OLED panel (Can only answer 'OLED' or 'LCD (LED)'). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the TV height without the stand and if there is multiple positions listed please answer with the shorter measurement (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Does this TV support ATSC 3 or Nextgen TV (Answer Yes or No if not found). Question 12: Does this TV support the Variable Refresh Rate feature also known as VRR (Only answer 'Yes' or 'No' if not found). Question 13: Does this TV have any form of the VRR feature FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Does this TV have any form of the VRR feature G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E' and if not found answer 'NS' for this question). Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No')."
             }
         ]
         )
-  print(completion.choices[0].message.content)
+#   print(completion.choices[0].message.content)
   pedigree_specs_arr = completion.choices[0].message.content.split(",")
   final_pedigree_specs_arr = []
   for i in pedigree_specs_arr:
@@ -168,7 +168,9 @@ def main():
   insertMultiple(final_pedigree_specs_arr, 31, " ", 5)
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   pyperclip.copy(f"{final_pedigree_specs}")
-  print("Specs were copied please paste the results into the tv workbook")
+  print(final_pedigree_specs)
   driver.quit()
+  print("Specs were copied please paste the results into the tv workbook")
+  time.sleep(5)
 
 main()
