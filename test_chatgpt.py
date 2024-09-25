@@ -73,6 +73,15 @@ def tcl(driver = None):
 def hisense(driver = None):
     return '//*[@id="ProductDetailsBox8"]'
 
+def toshiba(driver = None):
+    return '//*[@id="specifications-drawer"]/div[2]'
+
+def roku(driver = None):
+    return '//*[@id="main"]/main/div'
+    
+def panasonic(driver = None):
+    return '//*[@id="rn_AnswerText"]'
+
 def google_search(query, api_key, cse_id):
     url = 'https://www.googleapis.com/customsearch/v1'
     params = {
@@ -83,22 +92,22 @@ def google_search(query, api_key, cse_id):
     response = requests.get(url, params=params)
     results = response.json()
     # print(results)
-    # Extract snippets from the search results
-    search_snippets = []
+    search_links = []
     if 'items' in results:
         for item in results['items']:
-            search_snippets.append(item['link'])
-    return search_snippets
+            search_links.append(item['link'])
+    return search_links
  
 def get_url(brand, model):
     query = f"{brand} {model}"
+    url  = None
     
     # Perform Google search
     search_results = google_search(query, GOOGLE_API_KEY, CSE_ID)
     # print(search_results)
     if not search_results:
-        print("No relevant search results found.")
-        return
+        url = input('Please enter correct url\n')
+        return url
     
     # Get response from OpenAI using the search results
     completion = client.chat.completions.create(
@@ -132,7 +141,10 @@ def main():
     'samsung': samsung,
     'vizio': vizio,
     'tcl': tcl,
-    'hisense': hisense
+    'hisense': hisense,
+    'toshiba':toshiba,
+    'roku': roku,
+    'panasonic': panasonic
 }
 #   print(tv_link)
   driver = webdriver.Chrome(service=service, options=options)
@@ -149,7 +161,7 @@ def main():
             {"role": "system", "content": "You are a helpful assistant."},
             {
                 "role": "user",
-                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value nothing else? Question 2: Is this TV an OLED panel (Can only answer 'OLED' or 'LCD (LED)'). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the TV height without the stand and if there is multiple positions listed please answer with the shorter measurement (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Does this TV support ATSC 3 or Nextgen TV (Answer Yes or No if not found). Question 12: Does this TV support the Variable Refresh Rate feature also known as VRR (Only answer 'Yes' or 'No' if not found). Question 13: Does this TV have any form of the VRR feature FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Does this TV have any form of the VRR feature G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest WiFi Standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E' and if not found answer 'NS' for this question). Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No')."
+                "content": f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value rounded up and nothing else? Question 2: Is this TV an OLED panel (Can only answer 'OLED' or 'LCD (LED)'). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the TV height without the stand and if there is multiple positions listed please answer with the shorter measurement (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Does this TV support ATSC 3 or Nextgen TV (Answer Yes or No if not found). Question 12: Does this TV support the Variable Refresh Rate feature also known as VRR (Only answer 'Yes' or 'No' if not found). Question 13: Does this TV have any form of the VRR feature FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Does this TV have any form of the VRR feature G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest Wi-fi standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E', and 'NS' if you cannot find a wi-fi standard in the data provided). Question 16: Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No')."
             }
         ]
         )
