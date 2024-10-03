@@ -31,6 +31,7 @@ def lg(driver = None):
     return '//*[@id="simple-tabpanel-3"]'
 
 def sony(driver):  
+    driver.execute_script("document.body.style.zoom='25%'")
     driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-pdptab-nav/div/div/div/ul/li[3]/a').click()
     if check_exists_by_xpath('//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button', driver) == False:
         return
