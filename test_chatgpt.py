@@ -58,7 +58,7 @@ def bestbuy(driver):
     return '//*[@id="pdp-drawer-overlay-backdrop"]/div/div/div[4]'
     
 def sharp(driver = None):
-    return '//*[@id="syndi_powerpage"]/syndigo-powerpage//div/div[2]/div[5]'
+    return '//*[@id="syndi_powerpage"]/syndigo-powerpage//div/div[2]/div[5]/div/div/div[1]/div/table/tbody/tr[19]/td[1]/div/span/span/p'
 
 def vizio(driver = None):
     return '//*[@id="main-content"]/div/div/div/div/div[3]/tech-specs-element/div/div[2]' 
@@ -66,8 +66,18 @@ def vizio(driver = None):
 def tcl(driver = None):
     return '//*[@id="cmp-tabs"]/div[3]/div/div/div'
 
-def hisense(driver = None):
-    return '//*[@id="ProductDetailsBox8"]'
+def hisense(driver):
+    if check_exists_by_xpath('//*[@id="ProductDetailsBox8"]', driver):
+        return '//*[@id="ProductDetailsBox8"]'
+    elif check_exists_by_xpath('//*[@id="ProductDetailsBox10"]', driver):
+        return '//*[@id="ProductDetailsBox10"]'
+    elif check_exists_by_xpath('//*[@id="L9GProductDetailsBox9"]', driver):
+        return '//*[@id="L9GProductDetailsBox9"]'
+    elif check_exists_by_xpath('//*[@id="ProductDetailsBox13"]', driver):
+        return '//*[@id="ProductDetailsBox13"]' 
+    elif check_exists_by_xpath('//*[@id="ProductDetailsBox7"]', driver):
+        return '//*[@id="ProductDetailsBox7"]'
+    return '//*[@id="L9GProductDetailsBox0"]'
 
 def toshiba(driver = None):
     return '//*[@id="specifications-drawer"]/div[2]'
@@ -169,7 +179,7 @@ def main():
   spec_xpath = tv_func(driver)
   tv_specs = driver.find_element(By.XPATH, spec_xpath).get_attribute('textContent')
   final_url = driver.current_url
-  pedigree_answers = ask_chatgpt(f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value rounded up and nothing else? Question 2: Is this TV an OLED panel (Can only answer 'OLED' or 'LCD (LED)'). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the TV height without the stand and if there is multiple positions listed please answer with the shorter measurement (Just the decimal number in inches or if not found leave it blank). Question 10: What is the depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Does this TV support ATSC 3 or Nextgen TV (Answer Yes or No if not found). Question 12: Does this TV support the Variable Refresh Rate feature also known as VRR (Only answer 'Yes' or 'No' if not found). Question 13: Does this TV have any form of the VRR feature FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Does this TV have any form of the VRR feature G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest Wi-fi standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E', and 'NS' if you cannot find a wi-fi standard in the data provided). Question 16: Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No').")
+  pedigree_answers = ask_chatgpt(f"Here is some unfiltered data here:{tv_specs} for the {brand} {model} TV. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers.: Question 1: What is the screen size and only provide the whole number value rounded up and nothing else? Question 2: Is this TV an OLED panel (Can only answer 'OLED' or 'LCD (LED)'). Question 3: What is the native resolution of this TV (Can only answer 7680x4320, 3840x2160, 1920x1080, 1366x768 and if not found leave blank ). Question 4: What is the TV weight with the stand (Just the number in pounds or if not found leave it blank). Question 5: What is the TV width with the stand (Just the decimal number in inches or if not found leave it blank). Question 6: What is the TV height with the stand (Just the decimal number in inches or if not found leave it blank). Question 7: What is the TV depth with the stand (Just the decimal number in inches or if not found leave it blank). Question 8: What is the TV width without the stand (Just the decimal number in inches or if not found leave it blank). Question 9: What is the TV height without the stand (Just the decimal number in inches or if not found leave it blank). Question 10: What is the TV depth without the stand (Just the decimal number in inches or if not found leave it blank). Question 11: Does this TV support ATSC 3 or Nextgen TV (Answer Yes or No if not found). Question 12: Does this TV support the Variable Refresh Rate feature also known as VRR (Only answer 'Yes' or 'No' if not found). Question 13: Does this TV have any form of the VRR feature FreeSync (Can only answer FreeSync, FreeSync Premium, FreeSync Premium Pro, or None if not found ). Question 14: Does this TV have any form of the VRR feature G-Sync (Can only answer G-Sync Compatible, G-Sync, G-Sync Ultimate, or None if not found). Question 15: What is the Highest Wi-fi standard this TV supports (Can only answer: '802.11n/WiFi 4','802.11ac/WiFi 5', '802.11ax/WiFi 6', '802.11ax/WiFi 6E', and 'NS' if you cannot find a wi-fi standard in the data provided). Question 16: Does this TV have an 'Auto Low Latency Mode' also known as 'ALLM' feature (Can only answer 'Yes' or 'No').")
   pedigree_answers += f', {final_url}'
   final_pedigree_specs = format_pedigree_answer(pedigree_answers)
   pyperclip.copy(f"{final_pedigree_specs}")
