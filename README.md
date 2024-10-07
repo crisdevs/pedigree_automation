@@ -7,7 +7,6 @@ This automation tool uses the following:
 * Google search api for getting the list of google search result links to feed to chatgpt
 * The requests api for using a get request on the filtered google search site from the api
 * pyperclip for copying the data to the clipboard automatically
-* urllib for an easy way to get the domain name of sites
 * Webdriver manager which manages the drivers for web browser in this case Chrome
 ## How to use
 1. First clone this repo
