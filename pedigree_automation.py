@@ -154,7 +154,7 @@ def format_pedigree_answer(answer):
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
   return final_pedigree_specs
-# def main(brand, model, url) Testing purposes
+
 def main():
   #Pedigree questions are held in a seperate file that is not tracked by Git.
   pedigree_questions = None
@@ -163,22 +163,17 @@ def main():
   file.close()
   tv = input("Please enter brand and model\n")
   #Grabs the brand portion of the string entered by the user
-#   brand = brand.lower() For testing purposes
   brand = tv.split()[0].lower()
   #Does the same as above but for the model
   model = tv.split()[1]
-  #Function for doing a filtered google search using the enetered brand and model
   tv_link = get_url(brand, model)
-#   tv_link = url For testing purposes
   #This was a quick and easy way to get the domain name in the URL
   domain = urlparse(tv_link).netloc
-  #For best buy, plan on doing more sites for ex: Costco
   if domain == 'www.bestbuy.com':
       brand = 'bestbuy'
   elif domain == 'www.lg.com':
       #Have to add #pdp_specs to the URL so that it automatically takes us to the specs section
       tv_link += '#pdp_specs'
-  #TV dictionary of functions
   tv_dictionary = {
     'lg':lg,
     'sony':sony,
@@ -194,12 +189,9 @@ def main():
 }
   #Get the latest driver of Chrome so that it does not need to be included with source code
   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-  #Makes the window full screen
   driver.maximize_window()
-  #Goes to site
   driver.get(tv_link)
   time.sleep(2)
-  #Quick way without multiple if statements to get the correct function to run for the correct website
   tv_func = tv_dictionary[brand]
   #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
   spec_path = tv_func(driver)
@@ -212,39 +204,10 @@ def main():
   pedigree_answers += f', {final_url}'
   #Format answers
   final_pedigree_specs = format_pedigree_answer(pedigree_answers)
-  #Copy to clipboard
   pyperclip.copy(f"{final_pedigree_specs}")
   print(final_pedigree_specs)
   driver.quit()
   print("Specs were copied please paste the results into the tv workbook")
   #Gives it time so that user can see message
   time.sleep(5)
-#   return final_pedigree_specs For testing
-
-# For Testing
-# def test_automate_pedigree():
-#     list_of_tvs = None
-#     with open('tv_models.txt', 'r') as file:
-#         list_of_tvs = file.read()
-#     file.close()
-#     with open('tv_urls.txt', 'r') as file:
-#         list_of_urls = file.read()
-#     file.close()
-#     url_arr = list_of_urls.split('\n')
-#     tv_models_arr = list_of_tvs.split('\n')
-#     final_list_of_specs = ""
-    
-#     for i, content in enumerate(tv_models_arr):
-#         print(content)
-#         print(f'TV# {i + 1}')
-#         tv = content.split('\t')
-#         url = url_arr[i]
-#         brand = tv[1]
-#         model= tv[2]
-#         print(content)
-#         final_list_of_specs += f'{content}\t{main(brand,model,url)}'
-#         final_list_of_specs += '\n'
-#         pyperclip.copy(f"{final_list_of_specs}")
-    
-# test_automate_pedigree()
 main()
