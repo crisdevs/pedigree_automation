@@ -9,7 +9,20 @@ This automation tool uses the following:
 * pyperclip for copying the data to the clipboard automatically
 * urllib for an easy way to get the domain name of sites
 * Webdriver manager which manages the drivers for web browser in this case Chrome
-
+## How to use
+1. First clone this repo
+2. Then open a command line terminal and navigate to the saved cloned repo
+3. Run `pip install -r requirements.txt` to download the needed packages
+4. This script uses google search api and openai's chatgpt api so api keys will be needed for these packages
+5. You will need a seperate file called API_KEYS.py and it should look something like this:
+```
+ api_keys = {
+ "chat_gpt": ENTER API KEY HERE,
+ "google_search": ENTER API KEY HERE
+} 
+CSE_ID = ENTER CSE ID for the google search package
+```
+7. You should now be able to run the python file and follow the prompts as they display
 ## A High Level of how it works
 1. When you run the Python application the application will prompt you to enter the Brand and model.
 2. Enter the brand and model and then the script will use the custom Google search made through the Google search API to make a search using the entered brand and model.
