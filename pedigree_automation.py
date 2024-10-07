@@ -154,22 +154,17 @@ def format_pedigree_answer(answer):
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
   return final_pedigree_specs
-# def main(brand, model, url) Testing purposes
-def main():
+def main(brand, model, url):
   #Pedigree questions are held in a seperate file that is not tracked by Git.
   pedigree_questions = None
   with open('pedigree_questions.txt', 'r') as file:
       pedigree_questions = file.read()
   file.close()
-  tv = input("Please enter brand and model\n")
+#   tv = input("Please enter brand and model\n")
   #Grabs the brand portion of the string entered by the user
-#   brand = brand.lower() For testing purposes
-  brand = tv.split()[0].lower()
-  #Does the same as above but for the model
-  model = tv.split()[1]
+  brand = brand.lower()
   #Function for doing a filtered google search using the enetered brand and model
-  tv_link = get_url(brand, model)
-#   tv_link = url For testing purposes
+  tv_link = url
   #This was a quick and easy way to get the domain name in the URL
   domain = urlparse(tv_link).netloc
   #For best buy, plan on doing more sites for ex: Costco
@@ -213,38 +208,37 @@ def main():
   #Format answers
   final_pedigree_specs = format_pedigree_answer(pedigree_answers)
   #Copy to clipboard
-  pyperclip.copy(f"{final_pedigree_specs}")
+#   pyperclip.copy(f"{final_pedigree_specs}")
   print(final_pedigree_specs)
   driver.quit()
   print("Specs were copied please paste the results into the tv workbook")
   #Gives it time so that user can see message
   time.sleep(5)
-#   return final_pedigree_specs For testing
+  return final_pedigree_specs
 
 # For Testing
-# def test_automate_pedigree():
-#     list_of_tvs = None
-#     with open('tv_models.txt', 'r') as file:
-#         list_of_tvs = file.read()
-#     file.close()
-#     with open('tv_urls.txt', 'r') as file:
-#         list_of_urls = file.read()
-#     file.close()
-#     url_arr = list_of_urls.split('\n')
-#     tv_models_arr = list_of_tvs.split('\n')
-#     final_list_of_specs = ""
+def test_automate_pedigree():
+    list_of_tvs = None
+    with open('tv_models.txt', 'r') as file:
+        list_of_tvs = file.read()
+    file.close()
+    with open('tv_urls.txt', 'r') as file:
+        list_of_urls = file.read()
+    file.close()
+    url_arr = list_of_urls.split('\n')
+    tv_models_arr = list_of_tvs.split('\n')
+    final_list_of_specs = ""
     
-#     for i, content in enumerate(tv_models_arr):
-#         print(content)
-#         print(f'TV# {i + 1}')
-#         tv = content.split('\t')
-#         url = url_arr[i]
-#         brand = tv[1]
-#         model= tv[2]
-#         print(content)
-#         final_list_of_specs += f'{content}\t{main(brand,model,url)}'
-#         final_list_of_specs += '\n'
-#         pyperclip.copy(f"{final_list_of_specs}")
+    for i, content in enumerate(tv_models_arr):
+        print(content)
+        print(f'TV# {i + 1}')
+        tv = content.split('\t')
+        url = url_arr[i]
+        brand = tv[1]
+        model= tv[2]
+        print(content)
+        final_list_of_specs += f'{content}\t{main(brand,model,url)}'
+        final_list_of_specs += '\n'
+        pyperclip.copy(f"{final_list_of_specs}")
     
-# test_automate_pedigree()
-main()
+test_automate_pedigree()
