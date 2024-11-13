@@ -1,12 +1,13 @@
 import requests, pyperclip, time
 from API_KEYS import api_keys, CSE_ID
+from tv_dictionary import brand_logic
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.common.keys import Keys
 from openai import OpenAI
-from selenium.common.exceptions import NoSuchElementException
+
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -14,69 +15,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 def insertMultiple(arr, index, val, quantity):
   for i in range(quantity):
     arr.insert(index, val)
-
-def check_exists_by_xpath(xpath, driver):
-    try:
-        driver.find_element(By.XPATH,xpath)
-    except NoSuchElementException:
-        return False
-    return True
-
-def lg(driver = None):
-    return [By.XPATH, '//*[@id="simple-tabpanel-3"]']
-
-def sony(driver):  
-    #Zoom out so needed element can be in view at all times
-    driver.execute_script("document.body.style.zoom='25%'")
-    time.sleep(2)
-    #Clicks the specs button so that it will scroll down to the specs section
-    driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-pdptab-nav/div/div/div/ul/li[3]/a').click()
-    time.sleep(2)
-     #Checks to see if modal showing ad pop up. If so will then close the modal
-    if check_exists_by_xpath('//*[@id="contentfulModalClose"]', driver):
-        driver.find_element(By.XPATH, '//*[@id="contentfulModalClose"]').click()  
-    driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button').click()
-    return [By.XPATH, '/html/body/app-root/ngb-modal-window/div/div/div']
-
-def samsung(driver):
-    #Checks to see if element exists
-    if check_exists_by_xpath('//*[@id="#specs"]', driver):
-        return [By.XPATH, '//*[@id="#specs"]']
-    return [By.XPATH, '//*[@id="pdp-page"]/div/div/div/section[7]']
-
-def bestbuy(driver):
-    time.sleep(2)
-    #Finds and saves reference to 'show specs' button element
-    spec_button = driver.find_element(By.CLASS_NAME, 'show-full-specs-btn')
-    #Needed for using action methods
-    actions = ActionChains(driver)
-    #Scrolls to the referenced element (The button)
-    actions.move_to_element(spec_button).perform()
-    time.sleep(2)
-    spec_button.click()
-    time.sleep(2)
-    return [By.XPATH, '//*[@id="pdp-drawer-overlay-backdrop"]/div/div/div[4]']
-    
-def sharp(driver = None):
-    return [By.XPATH, '//*[@id="syndi_powerpage"]/syndigo-powerpage//div/div[2]/div[5]/div/div/div[1]/div/table/tbody/tr[19]/td[1]/div/span/span/p']
-
-def vizio(driver = None):
-    return [By.XPATH, '//*[@id="main-content"]/div/div/div/div/div[3]/tech-specs-element/div/div[2]'] 
-
-def tcl(driver = None):
-    return [By.XPATH, '//*[@id="cmp-tabs"]/div[3]/div/div/div']
-
-def hisense(driver):
-    return [By.TAG_NAME, 'body']
-
-def toshiba(driver = None):
-    return [By.XPATH, '//*[@id="specifications-drawer"]/div[2]']
-
-def roku(driver = None):
-    return [By.XPATH, '//*[@id="main"]/main/div']
-    
-def panasonic(driver = None):
-    return [By.XPATH, '//*[@id="rn_AnswerText"]']
 
 #Function for doing the google search.
 def google_search(query, api_key, cse_id):
@@ -113,6 +51,7 @@ def ask_chatgpt(prompt):
     return output
  
 def get_url(brand, model):
+    product_type = 'TV'
     query = f"{brand} {model}"
     url  = None
     # Will perform a google search using the brand and model entered by the user.
@@ -123,7 +62,7 @@ def get_url(brand, model):
     url = ask_chatgpt(f"""
                       Here is some information I found on the web:\n{search_results}\n\n
                       Now, based on this information, answer the following question: 
-                      'What is the product page link for the {brand} {model} TV and only return the url. 
+                      'What is the product page link for the {brand} {model} {product_type} and only return the url. 
                       Prioritize website links from the manufacturer website first and if you cannot find the 
                       website url from the manufacturer then prioritize URLs from best buy.'
                       """)
@@ -158,47 +97,34 @@ def format_pedigree_answer(answer):
 def main():
   #Pedigree questions are held in a seperate file that is not tracked by Git.
   pedigree_questions = None
-  with open('pedigree_questions.txt', 'r') as file:
+  with open('./files/pedigree_questions.txt', 'r') as file:
       pedigree_questions = file.read()
   file.close()
-  tv = input("Please enter brand and model\n")
+  product = input("Please enter brand and model\n")
   #Grabs the brand portion of the string entered by the user
-  brand = tv.split()[0].lower()
+  brand = product.split()[0].lower()
   #Does the same as above but for the model
-  model = tv.split()[1]
-  tv_link = get_url(brand, model)
+  model = product.split()[1]
+  product_link = get_url(brand, model)
   #This was a quick and easy way to get the domain name in the URL
-  domain = urlparse(tv_link).netloc
+  domain = urlparse(product_link).netloc
   if domain == 'www.bestbuy.com':
       brand = 'bestbuy'
   elif domain == 'www.lg.com':
       #Have to add #pdp_specs to the URL so that it automatically takes us to the specs section
-      tv_link += '#pdp_specs'
-  tv_dictionary = {
-    'lg':lg,
-    'sony':sony,
-    'samsung': samsung,
-    'vizio': vizio,
-    'tcl': tcl,
-    'hisense': hisense,
-    'toshiba':toshiba,
-    'roku': roku,
-    'panasonic': panasonic,
-    'sharp': sharp,
-    'bestbuy': bestbuy
-}
+      product_link += '#pdp_specs'
+
   #Get the latest driver of Chrome so that it does not need to be included with source code
   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
   driver.maximize_window()
-  driver.get(tv_link)
+  driver.get(product_link)
   time.sleep(2)
-  tv_func = tv_dictionary[brand]
   #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
-  spec_path = tv_func(driver)
+  spec_path = brand_logic(brand, driver)
   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
-  tv_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
+  product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
   final_url = driver.current_url
-  pedigree_answers = ask_chatgpt(f"""{tv_specs}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers. 
+  pedigree_answers = ask_chatgpt(f"""{product_specs}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers. 
                                  For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
   #Add the link of the url used to the answers
   pedigree_answers += f', {final_url}'

@@ -11,7 +11,7 @@ This automation tool uses the following:
 ## How to use
 1. First clone this repo
 2. Then open a command line terminal and navigate to the saved cloned repo
-3. Run `pip install -r requirements.txt` to download the needed packages
+3. Run `pip install -r ./files/requirements.txt` to download the needed packages
 4. This script uses google search api and openai's chatgpt api so api keys will be needed for these packages
 5. You will need a seperate file called API_KEYS.py and it should look something like this:
 ```
