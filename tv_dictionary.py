@@ -38,8 +38,11 @@ def brand_logic(brand, driver):
             return [By.XPATH, '/html/body/app-root/ngb-modal-window/div/div/div']
         elif brand == 'samsung':
             #Checks to see if element exists
+            #//*[@id="#specDetails"]
             if check_exists_by_xpath('//*[@id="#specs"]', driver):
                 return [By.XPATH, '//*[@id="#specs"]']
+            elif check_exists_by_xpath('[@id="#specDetails"]', driver):
+                return [By.XPATH, '[@id="#specDetails"]']
             return [By.XPATH, '//*[@id="pdp-page"]/div/div/div/section[7]']
         elif brand == 'bestbuy':
             time.sleep(2)
