@@ -39,11 +39,14 @@ def brand_logic(brand, driver):
         elif brand == 'samsung':
             #Checks to see if element exists
             #//*[@id="#specDetails"]
+            #//*[@id="pdp-page"]/div/div/div/section[8]/div[2]
             if check_exists_by_xpath('//*[@id="#specs"]', driver):
                 return [By.XPATH, '//*[@id="#specs"]']
-            elif check_exists_by_xpath('[@id="#specDetails"]', driver):
-                return [By.XPATH, '[@id="#specDetails"]']
+            elif check_exists_by_xpath('//*[@id="#specDetails"]', driver):
+                return [By.XPATH, '//*[@id="#specDetails"]']
             return [By.XPATH, '//*[@id="pdp-page"]/div/div/div/section[7]']
+            
+
         elif brand == 'bestbuy':
             time.sleep(2)
             #Finds and saves reference to 'show specs' button element

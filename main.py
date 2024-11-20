@@ -10,6 +10,12 @@ from openai import OpenAI
 
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
+service = Service()
+options = webdriver.ChromeOptions()
+
 
 #To help inserting values multiple times in the list.
 def insertMultiple(arr, index, val, quantity):
@@ -115,7 +121,8 @@ def main():
       product_link += '#pdp_specs'
 
   #Get the latest driver of Chrome so that it does not need to be included with source code
-  driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+#   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+  driver = webdriver.Chrome(service=service, options=options)
   driver.maximize_window()
   driver.get(product_link)
   time.sleep(2)
