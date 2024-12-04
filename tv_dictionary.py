@@ -34,7 +34,7 @@ def brand_logic(brand, driver):
             #Checks to see if modal showing ad pop up. If so will then close the modal
             if check_exists_by_xpath('//*[@id="contentfulModalClose"]', driver):
                 driver.find_element(By.XPATH, '//*[@id="contentfulModalClose"]').click()  
-            driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[3]/button').click()
+            driver.find_element(By.XPATH, '//*[@id="cx-main"]/app-product-details-page/div/app-product-specification/div/div[2]/div[2]/button').click()
             return [By.XPATH, '/html/body/app-root/ngb-modal-window/div/div/div']
         elif brand == 'samsung':
             #Checks to see if element exists
