@@ -11,6 +11,7 @@ def check_exists_by_xpath(xpath, driver):
     return True
 
 def brand_logic(brand, driver):
+    print(brand)
     tv_dictionary = {
         'lg':[By.XPATH, '//*[@id="simple-tabpanel-3"]'],
         'vizio': [By.XPATH, '//*[@id="main-content"]/div/div/div/div/div[3]/tech-specs-element/div/div[2]'],
