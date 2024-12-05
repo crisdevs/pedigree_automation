@@ -10,8 +10,14 @@ from openai import OpenAI
 
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 
-# #To help inserting values multiple times in the list.
+service = Service()
+options = webdriver.ChromeOptions()
+
+
+#To help inserting values multiple times in the list.
 def insertMultiple(arr, index, val, quantity):
   for i in range(quantity):
     arr.insert(index, val)
@@ -114,89 +120,27 @@ def get_url(brand, model):
 #       #Have to add #pdp_specs to the URL so that it automatically takes us to the specs section
 #       product_link += '#pdp_specs'
 
-#   #Get the latest driver of Chrome so that it does not need to be included with source code
+  #Get the latest driver of Chrome so that it does not need to be included with source code
 #   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-#   driver.maximize_window()
-#   driver.get(product_link)
-#   time.sleep(2)
-#   #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
-#   spec_path = brand_logic(brand, driver)
-#   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
-#   product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
-#   final_url = driver.current_url
-#   pedigree_answers = ask_chatgpt(f"""{product_specs}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers. 
-#                                  For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
-#   #Add the link of the url used to the answers
-#   pedigree_answers += f', {final_url}'
-#   #Format answers
-#   final_pedigree_specs = format_pedigree_answer(pedigree_answers)
-#   pyperclip.copy(f"{final_pedigree_specs}")
-#   print(final_pedigree_specs)
-#   driver.quit()
-#   print("Specs were copied please paste the results into the tv workbook")
-#   #Gives it time so that user can see message
-#   time.sleep(5)
-# main()
-
-
-
-
-from tkinter import *
-from tkinter import messagebox
-from tkinter import ttk
-import tkinter as tk
-
-root = tk.Tk()
-#Set window size
-root.geometry('300x200')
-brands = [
-    'Samsung',
-    'LG',
-    'Vizio',
-    'TCL',
-    'Sony',
-    'Panasonic',
-    'Hisense',
-    'Roku',
-    'Toshiba'
-]
-    
-
-brandLabel = Label(root, text = 'Brand')
-brandInput = ttk.Combobox(root, value=brands)
-brandInput.current(0)
-brandInput.config(state='readonly')
-modelLabel = Label(root, text="Model")
-modelInput = Entry(root, width = 23)
-
-
-brandLabel.pack()
-brandInput.pack()
-modelLabel.pack()
-modelInput.pack()
-
-
-def open_new_window () :
-    new_window = tk.Toplevel(root)
-    new_window.geometry('600x100')
-    new_window.title('URL Entry')
-    new_url_label = tk.Label(new_window, text = "Please enter correct URL").pack()
-    new_url_text = tk.Entry(new_window, width=70).pack()
-    enter_url = tk.Button(new_window, text = "Search").pack()
-    new_window.grab_set()
-
-
-def searchWithBrandModel ():
-    brand = brandInput.get()
-    model = modelInput.get()
-    
-    url = get_url(brand, model)
-    response = messagebox.askyesno("Confirm URL", "Is this the correct URL?\n" + url)
-    if response :
-        print('true')
-    else:
-        open_new_window()
-    
-
-searchButton = Button(root, text="Search", command= searchWithBrandModel).pack()
-root.mainloop()
+  driver = webdriver.Chrome(service=service, options=options)
+  driver.maximize_window()
+  driver.get(product_link)
+  time.sleep(2)
+  #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
+  spec_path = brand_logic(brand, driver)
+  #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
+  product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
+  final_url = driver.current_url
+  pedigree_answers = ask_chatgpt(f"""{product_specs}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers. 
+                                 For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
+  #Add the link of the url used to the answers
+  pedigree_answers += f', {final_url}'
+  #Format answers
+  final_pedigree_specs = format_pedigree_answer(pedigree_answers)
+  pyperclip.copy(f"{final_pedigree_specs}")
+  print(final_pedigree_specs)
+  driver.quit()
+  print("Specs were copied please paste the results into the tv workbook")
+  #Gives it time so that user can see message
+  time.sleep(5)
+main()
