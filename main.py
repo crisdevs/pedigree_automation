@@ -183,60 +183,82 @@ tv_questions = ["Screen Size_in","Series","Super Series","Display Type","Minimum
 "USB-A Ports","USB-C Ports","TV Has Built In Microphone","Can create individual user profiles","Has family settings/parental controls","Has Auto Low Latency Mode",
 "Has reduce blue light feature","Miracast","Airplay","Chromecast","Miscellaneous Features", "Website URL"]
 
-    
-    
-brandLabel = Label(root, text = 'Brand')
-brandInput = ttk.Combobox(root, value=brands)
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+search_frame = tk.Frame(root)
+search_frame.grid(row=0, column=0, sticky="nsew")
+search_frame.columnconfigure(0, weight=1)
+brandLabel = Label(search_frame, text = 'Brand')
+brandInput = ttk.Combobox(search_frame, value=brands)
 brandInput.current(0)
 brandInput.config(state='readonly')
-modelLabel = Label(root, text="Model")
-modelInput = Entry(root, width = 23)
+modelLabel = Label(search_frame, text="Model")
+modelInput = Entry(search_frame, width = 23)
 
-brandLabel.pack()
-brandInput.pack()
-modelLabel.pack()
-modelInput.pack()
+brandLabel.grid(row=0,column=0)
+brandInput.grid(row=1,column=0)
+modelLabel.grid(row=2,column=0)
+modelInput.grid(row=3,column=0)
 
 
 
 def open_result_window (brand, model):
+  
     result_window = tk.Toplevel(root)
+    result_window.geometry('600x600')
     results = main(brand, model)
     results_arr = results.split("\t")
     print(results)
     
-    result_window.geometry('600x100')
+    result_window_frame = tk.Frame(result_window)
+    result_window_frame.grid(row=0,column=0, sticky="nsew")
+    result_window_frame.columnconfigure(0, weight=1)
     
-    main_frame = Frame(result_window)
-    main_frame.pack(fill=BOTH, expand=1)
-    my_canvas = Canvas(main_frame)
-    my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
-    my_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
-    my_scrollbar.pack(side=RIGHT, fill=Y)
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion= my_canvas.bbox("all")))
-    second_frame = Frame(my_canvas)
-    my_canvas.create_window((0,0), window=second_frame, anchor="nw")
-    result_window.grab_set()
+   
+    result_tree = ttk.Treeview(result_window_frame)
+    result_tree.grid(row=0,column=0, sticky="new")
+    result_tree['column'] = ['Question', 'Answer']
+    result_tree['show'] = 'headings'
     
-    for x in range(0, 37):
-       questionsLabel =  tk.Label(second_frame, text=tv_questions[x])
-       questionsEntry = tk.Entry(second_frame)
-       questionsEntry.insert(0, results_arr[x])
-      #  questionsLabel.grid(row=0,column=x)
-      #  questionsEntry.grid(row=1, column=x)
-       questionsLabel.pack()
-       questionsEntry.pack()
-    copy_button = tk.Button(second_frame, text="Copy Specs", command=lambda:pyperclip.copy(results))
-    copy_button.pack()
-    
-def open_new_window () :
+    for col in result_tree['column']:
+      result_tree.heading(col, text=col)
+    i = 0
+    for row in tv_questions:
+      while(i < len(tv_questions)):
+        result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
+        i+=1
+      # result_tree.insert("", "end", values=results_arr)
+    # main_frame = Frame(result_window)
+    # main_frame.pack(fill=BOTH, expand=1)
+    # my_canvas = Canvas(main_frame)
+    # my_canvas.pack(side=LEFT, fill=BOTH, expand=1)
+    # my_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=my_canvas.yview)
+    # my_scrollbar.pack(side=RIGHT, fill=Y)
+    # my_canvas.configure(yscrollcommand=my_scrollbar.set)
+    # my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion= my_canvas.bbox("all")))
+    # second_frame = Frame(my_canvas)
+    # my_canvas.create_window((0,0), window=second_frame, anchor="nw")
+    # result_window.grab_set()
+    # for x in range(0, 37):
+    #    questionsLabel =  tk.Label(second_frame, text=tv_questions[x])
+    #    questionsEntry = tk.Entry(second_frame)
+    #    questionsEntry.insert(0, results_arr[x])
+    #   #  questionsLabel.grid(row=0,column=x)
+    #   #  questionsEntry.grid(row=1, column=x)
+    #    questionsLabel.grid(column=0, row = x)
+    #    questionsEntry.grid(column=0, row= x+1)
+    # copy_button = tk.Button(second_frame, text="Copy Specs", command=lambda:pyperclip.copy(results))
+    # copy_button.grid(column=0, row=73)
+
+  
+
+def open_new_window():
     new_window = tk.Toplevel(root)
     new_window.geometry('600x100')
     new_window.title('URL Entry')
-    new_url_label = tk.Label(new_window, text = "Please enter correct URL").pack()
-    new_url_text = tk.Entry(new_window, width=70).pack()
-    enter_url = tk.Button(new_window, text = "Search").pack()
+    new_url_label = tk.Label(new_window, text = "Please enter correct URL").grid()
+    new_url_text = tk.Entry(new_window, width=70).grid()
+    enter_url = tk.Button(new_window, text = "Search").grid()
     new_window.grab_set()
 
 def searchWithBrandModel ():
@@ -252,5 +274,5 @@ def searchWithBrandModel ():
         open_new_window()
     
 
-searchButton = Button(root, text="Search", command= searchWithBrandModel).pack()
+searchButton = tk.Button(search_frame, text="Search", command=searchWithBrandModel).grid(row=4, column=0)
 root.mainloop()
