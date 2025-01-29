@@ -210,23 +210,32 @@ def open_result_window (brand, model):
     results_arr = results.split("\t")
     print(results)
     
+    result_window.columnconfigure(0, weight=1)
+    result_window.rowconfigure(0, weight=1)
+    
     result_window_frame = tk.Frame(result_window)
     result_window_frame.grid(row=0,column=0, sticky="nsew")
     result_window_frame.columnconfigure(0, weight=1)
+    result_window_frame.rowconfigure(0, weight=1)
+    result_window_frame.rowconfigure(1, weight=0)
     
-   
     result_tree = ttk.Treeview(result_window_frame)
-    result_tree.grid(row=0,column=0, sticky="new")
+    result_tree.grid(row=0,column=0, sticky="nsew")
     result_tree['column'] = ['Question', 'Answer']
     result_tree['show'] = 'headings'
+    
+    copy_button = tk.Button(result_window_frame, text="Copy Specs", command=lambda:pyperclip.copy(results))
+    copy_button.grid(column=0, row=1, pady=10)
+    
+   
+
     
     for col in result_tree['column']:
       result_tree.heading(col, text=col)
     i = 0
-    for row in tv_questions:
-      while(i < len(tv_questions)):
-        result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
-        i+=1
+    while(i < len(tv_questions)):
+      result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
+      i+=1
       # result_tree.insert("", "end", values=results_arr)
     # main_frame = Frame(result_window)
     # main_frame.pack(fill=BOTH, expand=1)
