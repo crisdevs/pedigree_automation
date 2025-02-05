@@ -8,12 +8,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from openai import OpenAI
 from tkinter import *
-from tkinter import messagebox
 from tkinter import ttk
 import tkinter as tk
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
-import asyncio
 import threading
 
 brands = [
@@ -36,8 +34,9 @@ tv_questions = ["Screen Size_in","Series","Super Series","Display Type","Minimum
 
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
-    loading.geometry('250x200')
-    
+    #Set up window size for loading window
+    loading.geometry('300x200')
+    #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
     
@@ -47,34 +46,38 @@ def loading_window(task_name, task, *args):
     loading_frame.rowconfigure(0, weight=1)
     loading_frame.rowconfigure(1, weight=1)
     
+    # Bring window to the front
+    loading.lift()          
+    # Force focus on window
+    loading.focus_force()    
+    # Prevents interaction with main window
+    loading.grab_set()   
+    #Set up text and layout of label and progress bar
     task_label = Label(loading_frame, text= 'Working on: ' + task_name)
     task_label.grid(row=0, column=0, pady=(10 , 2), sticky= "nsew")
-    # task_label.rowconfigure(0, weight = 0)
-    # task_label.columnconfigure(0, weight=0)
     progressbar = ttk.Progressbar(loading_frame, mode="indeterminate")
     progressbar.grid(row=1, column=0, padx=20, sticky="new")
     progressbar.start()
-    # results = await task(*args)
-    # return results
-    # task()
-    # def run_task():
-    #     loop = asyncio.new_event_loop()
-    #     asyncio.set_event_loop(loop)
-    #     results = loop.run_until_complete(task(*args))
-    #     loop.close()
-    #     loading.destroy()  # Close loading window after task completion
-    #     return results
-    threading.Thread(target=lambda:task(*args), daemon=True).start()
-    
+    #Need to create another thread so chatgpt api calls can run in the background without freezing UI
+    task_thread =  threading.Thread(target=lambda:task(*args), daemon=True)
+    task_thread.start()
+        # Periodically check if thread is done Will be considered done when data from chatgpt is retrieved.
+    def check_if_done():
+        if not task_thread.is_alive():  # If thread has finished
+            loading.destroy()  # Close the loading window
+        else:
+            loading.after(500, check_if_done)  # Check again after 500ms (Will call itself)
+
+    check_if_done() 
+# Will make the api call to the custom google search and will feed the results to 
+# chatgpt(API call) and ask for the manufacturer link 
 def get_url(brand, model):
     product_type = 'TV'
+    #Used as the search term when calling the google search api
     query = f"{brand} {model}"
     url  = None
     # Will perform a google search using the brand and model entered by the user.
     search_results = google_search(query, api_keys['google_search'], CSE_ID)
-    if not search_results:
-        url = input('URL not found please manually search and enter URL below\n')
-        return url
     url = ask_chatgpt(f"""
                       Here is some information I found on the web:\n{search_results}\n\n
                       Now, based on this information, answer the following question: 
@@ -220,7 +223,14 @@ def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
     result_window.geometry('600x600')
-    
+
+    # Bring to front
+    result_window.lift()          
+    # Force focus
+    result_window.focus_force()    
+    # Prevents interaction with main window
+    result_window.grab_set()   
+
     results_arr = results.split("\t")
     print(results)
     
@@ -271,6 +281,5 @@ brandLabel.grid(row=0,column=0)
 brandInput.grid(row=1,column=0)
 modelLabel.grid(row=2,column=0)
 modelInput.grid(row=3,column=0)
-# loading_window('Searching for model page.')
 searchButton = tk.Button(search_frame, text="Search", command=lambda:searchWithBrandModel(brandInput.get().lower(), modelInput.get())).grid(row=4, column=0, pady=10)
 root.mainloop()
