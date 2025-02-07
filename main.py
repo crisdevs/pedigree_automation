@@ -27,12 +27,11 @@ brands = [
   'Toshiba'
 ]
 
-tv_questions = ["Screen Size_in","Series","Super Series","Display Type","Minimum Width Of Stand","Miscellaneous In The Box","Native Resolution","Weight_lbs","Overall Width_in","Overall Height_in","Overall Depth_in","Panel Width_in",
-"Panel Height_in","Panel Depth_in","Claimed Has ATSC 3 or Nextgen TV","Claimed Has Variable Refresh Rate","FreeSync claim","G-Sync claim",	
-"Claimed Highest WiFi Standard","Model Year","Total Qty Of HDMI Inputs","Analog Connections","Stereo Audio Output","Digital Audio Output","Ethernet port",	
-"USB-A Ports","USB-C Ports","TV Has Built In Microphone","Can create individual user profiles","Has family settings/parental controls","Has Auto Low Latency Mode",
-"Has reduce blue light feature","Miracast","Airplay","Chromecast","Miscellaneous Features", "Website URL"]
-
+with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
+      tv_questions = file.read()
+file.close()
+tv_questions = tv_questions.split('\n')
+print(tv_questions)
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
