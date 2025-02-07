@@ -268,7 +268,8 @@ def open_result_window (results):
 root = tk.Tk()
 #Set window size
 root.geometry('300x200')
-
+root.title('ChatGPT Pedigree Taker')
+root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 search_frame = tk.Frame(root)
