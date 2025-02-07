@@ -10,6 +10,7 @@ from openai import OpenAI
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
+from tkinter import messagebox
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
 import threading
@@ -211,7 +212,7 @@ def main(brand, model, product_link, prev_window):
       product_link += '#pdp_specs'
   spec_obj = get_spec_info(brand, product_link)
 
-  pedigree_answers = ask_chatgpt(f"""{spec_obj['specs']}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers seperated by commas and exclude the question numbers. 
+  pedigree_answers = ask_chatgpt(f"""{spec_obj['specs']}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
                                  For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
   #Add the link of the url used to the answers
   pedigree_answers += f', {spec_obj['final_url']}'
@@ -248,7 +249,7 @@ def open_result_window (results):
     result_tree['column'] = ['Question', 'Answer']
     result_tree['show'] = 'headings'
     
-    copy_button = tk.Button(result_window_frame, text="Copy Specs", command=lambda:pyperclip.copy(results))
+    copy_button = tk.Button(result_window_frame, text="Copy Specs", command=lambda:copy_to_clipboard(results))
     copy_button.grid(column=0, row=1, pady=10)
     
     for col in result_tree['column']:
@@ -259,7 +260,10 @@ def open_result_window (results):
       i+=1
       
 
-    
+    def copy_to_clipboard(results):
+       pyperclip.copy(results)
+       messagebox.showinfo('Copy to clipboard', 'Specs were copied to clipboard')
+
 
 root = tk.Tk()
 #Set window size
