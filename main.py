@@ -14,6 +14,10 @@ from tkinter import messagebox
 from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
 import threading
+from ctypes import windll
+
+#Fix the blurryness of text
+windll.shcore.SetProcessDpiAwareness(1)
 
 brands = [
   'Samsung',
@@ -31,7 +35,6 @@ with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
       tv_questions = file.read()
 file.close()
 tv_questions = tv_questions.split('\n')
-print(tv_questions)
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
@@ -91,7 +94,7 @@ def searchWithBrandModel (brand, model):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
-   new_window.geometry('600x100')
+   new_window.geometry('1600x400')
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
@@ -222,7 +225,7 @@ def main(brand, model, product_link, prev_window):
 def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
-    result_window.geometry('600x600')
+    result_window.geometry('1200x1500')
 
     # Bring to front
     result_window.lift()          
@@ -232,7 +235,6 @@ def open_result_window (results):
     result_window.grab_set()   
 
     results_arr = results.split("\t")
-    print(results)
     
     result_window.columnconfigure(0, weight=1)
     result_window.rowconfigure(0, weight=1)
@@ -244,15 +246,18 @@ def open_result_window (results):
     result_window_frame.rowconfigure(1, weight=0)
     
     result_tree = ttk.Treeview(result_window_frame)
+    style = ttk.Style(result_window)
+    style.configure("Treeview", rowheight=60)
     result_tree.grid(row=0,column=0, sticky="nsew")
     result_tree['column'] = ['Question', 'Answer']
     result_tree['show'] = 'headings'
     
     copy_button = tk.Button(result_window_frame, text="Copy Specs", command=lambda:copy_to_clipboard(results))
     copy_button.grid(column=0, row=1, pady=10)
-    
+
     for col in result_tree['column']:
       result_tree.heading(col, text=col)
+      result_tree.column(col, width=250)
     i = 0
     while(i < len(tv_questions)):
       result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
@@ -266,7 +271,7 @@ def open_result_window (results):
 
 root = tk.Tk()
 #Set window size
-root.geometry('300x200')
+root.geometry('800x500')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
