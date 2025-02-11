@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 from webdriver_manager.chrome import ChromeDriverManager
 import threading
 from ctypes import windll
+import re
 
 #Fix the blurryness of text
 windll.shcore.SetProcessDpiAwareness(1)
@@ -38,7 +39,7 @@ tv_questions = tv_questions.split('\n')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
-    loading.geometry('300x200')
+    loading.geometry('600x200')
     #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
@@ -94,7 +95,7 @@ def searchWithBrandModel (brand, model):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
-   new_window.geometry('1600x400')
+   new_window.geometry('1200x250')
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
@@ -188,7 +189,13 @@ def get_spec_info(brand, product_link):
   #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
   spec_path = brand_logic(brand, driver)
   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
-  product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
+#   product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
+  product_specs = driver.find_element(By.TAG_NAME, "body").get_attribute('textContent')
+  product_specs = re.sub(r'<[^>]+>', '', product_specs)
+  product_specs = re.sub(r'\{[^}]*\}', '', product_specs)
+  product_specs = re.sub(r'\[[^\]]*\]', '', product_specs)
+  product_specs = re.sub(r'\s+', ' ', product_specs).strip()
+  print("This is specs " + product_specs)
   final_url = driver.current_url
   driver.quit()
   return {
@@ -225,7 +232,7 @@ def main(brand, model, product_link, prev_window):
 def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
-    result_window.geometry('1200x1500')
+    result_window.geometry('1200x1200')
 
     # Bring to front
     result_window.lift()          
@@ -271,7 +278,7 @@ def open_result_window (results):
 
 root = tk.Tk()
 #Set window size
-root.geometry('800x500')
+root.geometry('500x300')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
