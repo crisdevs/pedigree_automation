@@ -4,8 +4,6 @@ from tv_dictionary import brand_logic
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from openai import OpenAI
 from tkinter import *
 from tkinter import ttk
