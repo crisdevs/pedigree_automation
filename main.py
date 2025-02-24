@@ -89,7 +89,19 @@ def get_url(brand, model):
                       """)
     return url
 
-def searchWithBrandModel (brand, model):
+def manual_text_window(brand, model, url, prev_window):
+    prev_window.destroy()
+    manual_text_win = tk.Toplevel(root)
+    manual_text_win.geometry('900x900')
+    label = tk.Label(manual_text_win, text= "Enter text below")
+    entry = tk.Text(manual_text_win, width=70, height= 20)
+    button = tk.Button(manual_text_win, text= "Get answers", command= lambda: loading_window("ChatGPT answering pedigree questions", open_result_window(get_pedigree_answers, brand, model, entry.get("1.0", "end")), url))
+    
+    label.grid(row=0, column=0)
+    entry.grid(row=1, column=0)
+    button.grid(row=2, column=0)
+
+def searchWithBrandModel (brand, model, is_manual):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
@@ -104,12 +116,31 @@ def searchWithBrandModel (brand, model):
    confirm_url_frame.rowconfigure(0, weight=1)
    confirm_url_frame.rowconfigure(1, weight=1)
    confirm_url_frame.rowconfigure(2, weight=1)
+   
 
    new_url_label = tk.Label(confirm_url_frame, text = "Confirm That this is the correct url you wish to grab specs from").grid(row=0, column=0)
    new_url_text = tk.Entry(confirm_url_frame, width=70)
    new_url_text.grid(row=1, column=0)
    new_url_text.insert(0, url)
-   enter_url = tk.Button(confirm_url_frame, text = "Search", command=lambda:loading_window('Retrieving specs from model page.', main, brand, model, new_url_text.get(), new_window)).grid(row=2, column=0)
+   button_frame = tk.Frame(confirm_url_frame)
+   button_frame.grid(row=2, column=0)
+   button_func = None
+   func_text = None
+   args = None
+   print(is_manual)
+   if is_manual == True:
+       func_text = "loading text window"
+       button_func = manual_text_window
+       args = [brand, model, new_url_text.get(), new_window]
+   else:
+       func_text = 'Retrieving specs from model page.'
+       button_func = main
+       args = [brand, model, new_url_text.get(), new_window]
+       
+   enter_url = tk.Button(button_frame, text = "Confirm", command=lambda:loading_window(func_text, button_func, *args))
+   copy_url = tk.Button(button_frame, text = "Copy URL", command=lambda:pyperclip.copy(new_url_text.get()))
+   enter_url.grid(row=0, column=0, padx=30)
+   copy_url.grid(row=0, column=1, padx=30)
    new_window.grab_set()
     
 # #To help inserting values multiple times in the list.
@@ -193,23 +224,26 @@ def get_spec_info(brand, product_link):
   product_specs = re.sub(r'\{[^}]*\}', '', product_specs)
   product_specs = re.sub(r'\[[^\]]*\]', '', product_specs)
   product_specs = re.sub(r'\s+', ' ', product_specs).strip()
-  print("This is specs " + product_specs)
-  final_url = driver.current_url
   driver.quit()
-  return {
-      'specs': product_specs,
-      'final_url': final_url
-  }
+  return product_specs
+def get_pedigree_answers(brand, model, data, url):
+    #Pedigree questions are held in a seperate file that is not tracked by Git.
+    pedigree_questions = None
+    with open('./files/pedigree_questions.txt', 'r') as file:
+        pedigree_questions = file.read()
+    file.close()
+    # spec_obj['specs']
+    pedigree_answers = ask_chatgpt(f"""{data}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
+                                    For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
+    #Add the link of the url used to the answers
+    pedigree_answers += f', {url}'
+    #Format answers
+    final_pedigree_specs = format_pedigree_answer(pedigree_answers)
+    return final_pedigree_specs
 
 def main(brand, model, product_link, prev_window):
   prev_window.destroy()
   
-  #Pedigree questions are held in a seperate file that is not tracked by Git.
-  pedigree_questions = None
-  with open('./files/pedigree_questions.txt', 'r') as file:
-      pedigree_questions = file.read()
-  file.close()
-
   #This was a quick and easy way to get the domain name in the URL
   domain = urlparse(product_link).netloc
   if domain == 'www.bestbuy.com':
@@ -217,14 +251,8 @@ def main(brand, model, product_link, prev_window):
   elif domain == 'www.lg.com':
       #Have to add #pdp_specs to the URL so that it automatically takes us to the specs section
       product_link += '#pdp_specs'
-  spec_obj = get_spec_info(brand, product_link)
-
-  pedigree_answers = ask_chatgpt(f"""{spec_obj['specs']}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
-                                 For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
-  #Add the link of the url used to the answers
-  pedigree_answers += f', {spec_obj['final_url']}'
-  #Format answers
-  final_pedigree_specs = format_pedigree_answer(pedigree_answers)
+  specs = get_spec_info(brand, product_link)
+  final_pedigree_specs = get_pedigree_answers(brand, model, specs, product_link)
   open_result_window(final_pedigree_specs)
 
 def open_result_window (results):
@@ -244,7 +272,7 @@ def open_result_window (results):
     result_window.columnconfigure(0, weight=1)
     result_window.rowconfigure(0, weight=1)
     
-    result_window_frame = tk.Frame(result_window)
+    result_window_frame = tk.Frame(result_window, bd=0, highlightthickness=0)
     result_window_frame.grid(row=0,column=0, sticky="nsew")
     result_window_frame.columnconfigure(0, weight=1)
     result_window_frame.rowconfigure(0, weight=1)
@@ -268,6 +296,9 @@ def open_result_window (results):
       result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
       i+=1
       
+    result_scrollbar = tk.Scrollbar(result_window_frame, orient="vertical", command=result_tree.yview)
+    result_tree.configure(yscrollcommand=result_scrollbar.set)
+    result_scrollbar.grid(row=0, column=1,sticky="ns", pady=0)
 
     def copy_to_clipboard(results):
        pyperclip.copy(results)
@@ -276,7 +307,7 @@ def open_result_window (results):
 
 root = tk.Tk()
 #Set window size
-root.geometry('500x300')
+root.geometry('500x400')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
@@ -290,10 +321,17 @@ brandInput.current(0)
 brandInput.config(state='readonly')
 modelLabel = Label(search_frame, text="Model")
 modelInput = Entry(search_frame, width = 23)
+is_manual = BooleanVar()
+manual_text_mode = Radiobutton(root, text = "Manual text mode", variable = is_manual, value=True)
+web_scraping_mode = Radiobutton(root, text = "Web Scraping Mode", variable =is_manual, value=False)
 
 brandLabel.grid(row=0,column=0)
 brandInput.grid(row=1,column=0)
 modelLabel.grid(row=2,column=0)
 modelInput.grid(row=3,column=0)
-searchButton = tk.Button(search_frame, text="Search", command=lambda:searchWithBrandModel(brandInput.get().lower(), modelInput.get())).grid(row=4, column=0, pady=10)
+manual_text_mode.grid(row=4, column=0)
+web_scraping_mode.grid(row=5, column=0)
+
+
+searchButton = tk.Button(search_frame, text="Search", command=lambda:searchWithBrandModel(brandInput.get().lower(), modelInput.get(), is_manual.get())).grid(row=4, column=0, pady=10)
 root.mainloop()
