@@ -95,7 +95,7 @@ def manual_text_window(brand, model, url, prev_window):
     manual_text_win.geometry('900x900')
     label = tk.Label(manual_text_win, text= "Enter text below")
     entry = tk.Text(manual_text_win, width=70, height= 20)
-    button = tk.Button(manual_text_win, text= "Get answers", command= lambda: loading_window("ChatGPT answering pedigree questions", open_result_window(get_pedigree_answers, brand, model, entry.get("1.0", "end")), url))
+    button = tk.Button(manual_text_win, text= "Get answers", command= lambda: loading_window("ChatGPT answering pedigree questions", get_pedigree_answers, brand, model, entry.get("1.0", "end"), url))
     
     label.grid(row=0, column=0)
     entry.grid(row=1, column=0)
