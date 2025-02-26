@@ -93,11 +93,33 @@ def manual_text_window(brand, model, url, prev_window):
     prev_window.destroy()
     manual_text_win = tk.Toplevel(root)
     manual_text_win.geometry('900x900')
-    label = tk.Label(manual_text_win, text= "Enter text below")
-    entry = tk.Text(manual_text_win, width=70, height= 20)
-    button = tk.Button(manual_text_win, text= "Get answers", command= lambda: loading_window("ChatGPT answering pedigree questions", get_pedigree_answers, brand, model, entry.get("1.0", "end"), url))
+    manual_text_win.rowconfigure(0, weight=1)
+    manual_text_win.columnconfigure(0, weight=1)
+    manual_text_win.lift()          
+    manual_text_win.focus_force()    
+    manual_text_win.grab_set()
+       
+    manual_text_frame = tk.Frame(manual_text_win)
+    manual_text_frame.rowconfigure(0, weight=1)
+    manual_text_frame.rowconfigure(1, weight=1)
+    manual_text_frame.rowconfigure(2, weight=1)
+    manual_text_frame.columnconfigure(0, weight=1)
+    manual_text_frame.grid(column=0, row= 0, sticky="nsew")
     
-    label.grid(row=0, column=0)
+    label = tk.Label(manual_text_frame, text= "Enter text below")
+    label.columnconfigure(0, weight=1)
+    entry = tk.Text(manual_text_frame, width=70, height= 20)
+    
+    def manual_text_processing(brand, model, text, url, text_window):
+        # entry.get("1.0", "end")
+       final_pedigree_answers = get_pedigree_answers(brand,model,text,url)
+       text_window.destroy()
+       open_result_window(final_pedigree_answers)
+       
+    
+    button = tk.Button(manual_text_frame, text= "Get answers", command= lambda: loading_window("Answering pedigree questions", manual_text_processing, brand, model, entry.get("1.0", "end") ,url, manual_text_win))
+    
+    label.grid(row=0, column=0, sticky="nsew")
     entry.grid(row=1, column=0)
     button.grid(row=2, column=0)
 
@@ -226,6 +248,7 @@ def get_spec_info(brand, product_link):
   product_specs = re.sub(r'\s+', ' ', product_specs).strip()
   driver.quit()
   return product_specs
+
 def get_pedigree_answers(brand, model, data, url):
     #Pedigree questions are held in a seperate file that is not tracked by Git.
     pedigree_questions = None
