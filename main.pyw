@@ -329,6 +329,30 @@ def open_result_window (results):
 
 
 root = tk.Tk()
+
+# # Create the menu bar
+# menu_bar = tk.Menu(root)
+
+# # Create "File" menu
+# file_menu = tk.Menu(menu_bar, tearoff=0)
+# file_menu.add_command(label="New")
+# file_menu.add_command(label="Open")
+# file_menu.add_separator()
+# file_menu.add_command(label="Exit")
+
+# # Add "File" menu to menu bar
+# menu_bar.add_cascade(label="File", menu=file_menu)
+
+# # Create "Help" menu
+# help_menu = tk.Menu(menu_bar, tearoff=0)
+# help_menu.add_command(label="About", command=lambda: messagebox.showinfo("About", "Tkinter Menu Example v1.0"))
+
+# # Add "Help" menu to menu bar
+# menu_bar.add_cascade(label="Help", menu=help_menu)
+
+# # Attach menu bar to window
+# root.config(menu=menu_bar)
+
 #Set window size
 root.geometry('500x400')
 root.title('ChatGPT Pedigree Taker')
