@@ -41,6 +41,7 @@ def loading_window(task_name, task, *args):
     #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
+    loading.iconbitmap('CR_logo.ico')
     
     loading_frame = tk.Frame(loading)
     loading_frame.grid(row=0, column=0, sticky="nsew")
@@ -98,7 +99,8 @@ def manual_text_window(brand, model, url, prev_window):
     manual_text_win.lift()          
     manual_text_win.focus_force()    
     manual_text_win.grab_set()
-       
+    manual_text_win.iconbitmap('CR_logo.ico')
+    
     manual_text_frame = tk.Frame(manual_text_win)
     manual_text_frame.rowconfigure(0, weight=1)
     manual_text_frame.rowconfigure(1, weight=1)
@@ -131,7 +133,8 @@ def searchWithBrandModel (brand, model, is_manual):
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
-
+   new_window.iconbitmap('CR_logo.ico')
+   
    confirm_url_frame = tk.Frame(new_window)
    confirm_url_frame.grid(row=0, column=0, sticky="nsew")
    confirm_url_frame.columnconfigure(0, weight=1)
@@ -282,7 +285,7 @@ def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
     result_window.geometry('1200x1200')
-
+    result_window.iconbitmap('CR_logo.ico')
     # Bring to front
     result_window.lift()          
     # Force focus
