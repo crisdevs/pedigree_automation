@@ -33,7 +33,7 @@ brands = [
 with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
       tv_questions = file.read()
 file.close()
-tv_questions = tv_questions.split('\n')
+tv_questions = tv_questions.split('\t')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
@@ -152,7 +152,6 @@ def searchWithBrandModel (brand, model, is_manual):
    button_func = None
    func_text = None
    args = None
-   print(is_manual)
    if is_manual == True:
        func_text = "loading text window"
        button_func = manual_text_window
@@ -234,7 +233,7 @@ def format_pedigree_answer(answer):
   return final_pedigree_specs
 
 def get_spec_info(brand, product_link):  
-  
+
   #Get the latest driver of Chrome so that it does not need to be included with source code
   driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
   driver.maximize_window()
@@ -245,15 +244,12 @@ def get_spec_info(brand, product_link):
   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
 #   product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
   product_specs = driver.find_element(By.TAG_NAME, "body").get_attribute('textContent')
-  print(product_specs)
-
   product_specs = re.sub(r'<[^>]+>', '', product_specs)
-  with open("output.txt", "w", encoding="utf-8") as file:
-    file.write(product_specs)
   product_specs = re.sub(r'\{[^}]*\}', '', product_specs)
   product_specs = re.sub(r'\[[^\]]*\]', '', product_specs)
+#   with open("output.txt", "w", encoding="utf-8") as file:
+#     file.write(product_specs)
   product_specs = re.sub(r'\s+', ' ', product_specs).strip()
-  print(product_specs)
   driver.quit()
   return product_specs
 
