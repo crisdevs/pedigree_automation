@@ -37,7 +37,7 @@ tv_questions = tv_questions.split('\n')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
-    loading.geometry('600x200')
+    loading.geometry('900x200')
     #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
@@ -93,7 +93,7 @@ def get_url(brand, model):
 def manual_text_window(brand, model, url, prev_window):
     prev_window.destroy()
     manual_text_win = tk.Toplevel(root)
-    manual_text_win.geometry('900x900')
+    manual_text_win.geometry('1000x1000')
     manual_text_win.rowconfigure(0, weight=1)
     manual_text_win.columnconfigure(0, weight=1)
     manual_text_win.lift()          
@@ -129,7 +129,7 @@ def searchWithBrandModel (brand, model, is_manual):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
-   new_window.geometry('1200x250')
+   new_window.geometry('1500x250')
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
@@ -225,9 +225,9 @@ def format_pedigree_answer(answer):
             final_pedigree_specs_arr.append(i)
   #Add multiple spaces so that answers will be under the right question in excel
   insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
-  insertMultiple(final_pedigree_specs_arr, 4, " ", 2)
-  insertMultiple(final_pedigree_specs_arr, 19, " ", 11)
-  insertMultiple(final_pedigree_specs_arr, 31, " ", 5)
+  insertMultiple(final_pedigree_specs_arr, 4, " ", 3)
+  insertMultiple(final_pedigree_specs_arr, 20, " ", 12)
+  insertMultiple(final_pedigree_specs_arr, 33, " ", 5)
   #Make the list into a string again but seperated by tabs(cells) for excel
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
@@ -245,10 +245,15 @@ def get_spec_info(brand, product_link):
   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
 #   product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
   product_specs = driver.find_element(By.TAG_NAME, "body").get_attribute('textContent')
+  print(product_specs)
+
   product_specs = re.sub(r'<[^>]+>', '', product_specs)
+  with open("output.txt", "w", encoding="utf-8") as file:
+    file.write(product_specs)
   product_specs = re.sub(r'\{[^}]*\}', '', product_specs)
   product_specs = re.sub(r'\[[^\]]*\]', '', product_specs)
   product_specs = re.sub(r'\s+', ' ', product_specs).strip()
+  print(product_specs)
   driver.quit()
   return product_specs
 
@@ -284,7 +289,7 @@ def main(brand, model, product_link, prev_window):
 def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
-    result_window.geometry('1200x1200')
+    result_window.geometry('1400x1400')
     result_window.iconbitmap('CR_logo.ico')
     # Bring to front
     result_window.lift()          
@@ -357,7 +362,7 @@ root = tk.Tk()
 # root.config(menu=menu_bar)
 
 #Set window size
-root.geometry('500x400')
+root.geometry('700x600')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)

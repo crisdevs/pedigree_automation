@@ -2,3 +2,4 @@
 tv_*.txt
 API_KEYS.py
 __pycache__/
+output*.txt
