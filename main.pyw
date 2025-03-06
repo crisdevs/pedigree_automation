@@ -335,7 +335,12 @@ root = tk.Tk()
 
 # # Create the menu bar
 # menu_bar = tk.Menu(root)
+menu_bar = Menu(root)
+root.config(menu=menu_bar)
 
+file_menu = Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label= "File", menu= file_menu)
+file_menu.add_command(label="Set Questions", command= print('Set'))
 # # Create "File" menu
 # file_menu = tk.Menu(menu_bar, tearoff=0)
 # file_menu.add_command(label="New")
