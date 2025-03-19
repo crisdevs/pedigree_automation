@@ -29,11 +29,11 @@ brands = [
   'Roku',
   'Toshiba'
 ]
-
+tv_questions = None
 with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
       tv_questions = file.read()
 file.close()
-tv_questions = tv_questions.split('\n')
+tv_questions = tv_questions.split('\t')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
@@ -225,9 +225,9 @@ def format_pedigree_answer(answer):
             final_pedigree_specs_arr.append(i)
   #Add multiple spaces so that answers will be under the right question in excel
   insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
-  insertMultiple(final_pedigree_specs_arr, 4, " ", 2)
-  insertMultiple(final_pedigree_specs_arr, 19, " ", 11)
-  insertMultiple(final_pedigree_specs_arr, 31, " ", 5)
+  insertMultiple(final_pedigree_specs_arr, 4, " ", 3)
+  insertMultiple(final_pedigree_specs_arr, 20, " ", 12)
+  insertMultiple(final_pedigree_specs_arr, 33, " ", 5)
   #Make the list into a string again but seperated by tabs(cells) for excel
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
@@ -318,6 +318,8 @@ def open_result_window (results):
       result_tree.heading(col, text=col)
       result_tree.column(col, width=250)
     i = 0
+    print(len(tv_questions))
+    print(len(results_arr))
     while(i < len(tv_questions)):
       result_tree.insert("", "end", values=(tv_questions[i], results_arr[i]))
       i+=1
@@ -331,16 +333,29 @@ def open_result_window (results):
        messagebox.showinfo('Copy to clipboard', 'Specs were copied to clipboard')
 
 
-root = tk.Tk()
+# def set_question():
+#     set_question_window = tk.Toplevel(root)
+#     set_question_window.geometry('1200x1200')
+#     set_question_window.iconbitmap('CR_logo.ico')
+#     # Bring to front
+#     set_question_window.lift()          
+#     # Force focus
+#     set_question_window.focus_force()    
+#     # Prevents interaction with main window
+#     set_question_window.grab_set()   
+    
+    
+
+
 
 # # Create the menu bar
 # menu_bar = tk.Menu(root)
-menu_bar = Menu(root)
-root.config(menu=menu_bar)
+# menu_bar = Menu(root)
+# root.config(menu=menu_bar)
 
-file_menu = Menu(menu_bar, tearoff=0)
-menu_bar.add_cascade(label= "File", menu= file_menu)
-file_menu.add_command(label="Set Questions", command= print('Set'))
+# file_menu = Menu(menu_bar, tearoff=0)
+# menu_bar.add_cascade(label= "File", menu= file_menu)
+# file_menu.add_command(label="Set Questions", command= set_question)
 # # Create "File" menu
 # file_menu = tk.Menu(menu_bar, tearoff=0)
 # file_menu.add_command(label="New")
@@ -361,8 +376,10 @@ file_menu.add_command(label="Set Questions", command= print('Set'))
 # # Attach menu bar to window
 # root.config(menu=menu_bar)
 
+root = tk.Tk()
 #Set window size
 root.geometry('500x400')
+print(tv_questions)
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
