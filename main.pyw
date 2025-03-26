@@ -14,7 +14,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import threading
 from ctypes import windll
 import re
-
+# print(api_keys['chat_gpt'])
 #Fix the blurryness of text
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -23,17 +23,21 @@ brands = [
   'LG',
   'Vizio',
   'TCL',
-  'Sony',
-  'Panasonic',
-  'Hisense',
-  'Roku',
-  'Toshiba'
+  'Bose',
+  'Sonos',
+  'JBL',
+  'Denon',
+  'Bowers Wilkins',
+  'Yamaha',
+  'Polk Audio',
+  'Sennheiser',
+  'Hisense'
 ]
 
 with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
       tv_questions = file.read()
 file.close()
-tv_questions = tv_questions.split('\t')
+tv_questions = tv_questions.split('  ')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
@@ -193,6 +197,7 @@ def google_search(query, api_key, cse_id):
 
 #Function for asking chatGPT. Prompt is the prompt that you would like to ask ChatGPT
 def ask_chatgpt(prompt):
+    print(api_keys['chat_gpt'])
     client = OpenAI(api_key= api_keys['chat_gpt'])
     completion =  client.chat.completions.create(
         model="gpt-4o-mini",
@@ -223,10 +228,10 @@ def format_pedigree_answer(answer):
         else:
             final_pedigree_specs_arr.append(i)
   #Add multiple spaces so that answers will be under the right question in excel
-  insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
-  insertMultiple(final_pedigree_specs_arr, 4, " ", 3)
-  insertMultiple(final_pedigree_specs_arr, 20, " ", 12)
-  insertMultiple(final_pedigree_specs_arr, 33, " ", 5)
+#   insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
+#   insertMultiple(final_pedigree_specs_arr, 4, " ", 3)
+#   insertMultiple(final_pedigree_specs_arr, 20, " ", 12)
+#   insertMultiple(final_pedigree_specs_arr, 33, " ", 5)
   #Make the list into a string again but seperated by tabs(cells) for excel
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
@@ -256,11 +261,11 @@ def get_spec_info(brand, product_link):
 def get_pedigree_answers(brand, model, data, url):
     #Pedigree questions are held in a seperate file that is not tracked by Git.
     pedigree_questions = None
-    with open('./files/pedigree_questions.txt', 'r') as file:
+    with open('./files/pedigree_questions_soundbar.txt', 'r') as file:
         pedigree_questions = file.read()
     file.close()
     # spec_obj['specs']
-    pedigree_answers = ask_chatgpt(f"""{data}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
+    pedigree_answers = ask_chatgpt(f"""{data}\n I have provided some unfiltered data web scraped from the {brand} {model} Soundbar product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
                                     For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
     #Add the link of the url used to the answers
     pedigree_answers += f', {url}'
