@@ -27,7 +27,8 @@ brands = [
   'Panasonic',
   'Hisense',
   'Roku',
-  'Toshiba'
+  'Toshiba',
+  'Philips'
 ]
 
 with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
@@ -91,6 +92,7 @@ def get_url(brand, model):
     return url
 
 def manual_text_window(brand, model, url, prev_window):
+    print(url)
     prev_window.destroy()
     manual_text_win = tk.Toplevel(root)
     manual_text_win.geometry('1000x1000')
@@ -152,16 +154,23 @@ def searchWithBrandModel (brand, model, is_manual):
    button_func = None
    func_text = None
    args = None
-   if is_manual == True:
-       func_text = "loading text window"
-       button_func = manual_text_window
-       args = [brand, model, new_url_text.get(), new_window]
-   else:
-       func_text = 'Retrieving specs from model page.'
-       button_func = main
-       args = [brand, model, new_url_text.get(), new_window]
+
+
+    #temp solution to url not being changed
+   def confirm_url():
+        if is_manual == True:
+            func_text = "loading text window"
+            button_func = manual_text_window
+            args = [brand, model, new_url_text.get(), new_window]
+        else:
+            func_text = 'Retrieving specs from model page.'
+            button_func = main
+            args = [brand, model, new_url_text.get(), new_window]
+
+        loading_window(func_text, button_func, *args)
+        
        
-   enter_url = tk.Button(button_frame, text = "Confirm", command=lambda:loading_window(func_text, button_func, *args))
+   enter_url = tk.Button(button_frame, text = "Confirm", command=lambda:confirm_url())
    copy_url = tk.Button(button_frame, text = "Copy URL", command=lambda:pyperclip.copy(new_url_text.get()))
    enter_url.grid(row=0, column=0, padx=30)
    copy_url.grid(row=0, column=1, padx=30)
