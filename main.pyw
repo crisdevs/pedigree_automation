@@ -130,46 +130,49 @@ def manual_text_window(brand, model, url, prev_window):
     button.grid(row=2, column=0)
 
 def searchWithBrandModel (brand, model, is_manual):
-   url = get_url(brand, model)
-   
-   new_window = tk.Toplevel(root)
-   new_window.geometry('1500x250')
-   new_window.title('URL Entry')
-   new_window.columnconfigure(0, weight=1)
-   new_window.rowconfigure(0, weight=1)
-   new_window.iconbitmap('CR_logo.ico')
-   
-   confirm_url_frame = tk.Frame(new_window)
-   confirm_url_frame.grid(row=0, column=0, sticky="nsew")
-   confirm_url_frame.columnconfigure(0, weight=1)
-   confirm_url_frame.rowconfigure(0, weight=1)
-   confirm_url_frame.rowconfigure(1, weight=1)
-   confirm_url_frame.rowconfigure(2, weight=1)
-   
+   if len(model.strip()) > 0:
+    url = get_url(brand, model)
+    
+    new_window = tk.Toplevel(root)
+    new_window.geometry('1500x250')
+    new_window.title('URL Entry')
+    new_window.columnconfigure(0, weight=1)
+    new_window.rowconfigure(0, weight=1)
+    new_window.iconbitmap('CR_logo.ico')
+    
+    confirm_url_frame = tk.Frame(new_window)
+    confirm_url_frame.grid(row=0, column=0, sticky="nsew")
+    confirm_url_frame.columnconfigure(0, weight=1)
+    confirm_url_frame.rowconfigure(0, weight=1)
+    confirm_url_frame.rowconfigure(1, weight=1)
+    confirm_url_frame.rowconfigure(2, weight=1)
+    
 
-   new_url_label = tk.Label(confirm_url_frame, text = "Confirm That this is the correct url you wish to grab specs from").grid(row=0, column=0)
-   new_url_text = tk.Entry(confirm_url_frame, width=70)
-   new_url_text.grid(row=1, column=0)
-   new_url_text.insert(0, url)
-   button_frame = tk.Frame(confirm_url_frame)
-   button_frame.grid(row=2, column=0)
-   button_func = None
-   func_text = None
-   args = None
-   if is_manual == True:
-       func_text = "loading text window"
-       button_func = manual_text_window
-       args = [brand, model, new_url_text.get(), new_window]
-   else:
-       func_text = 'Retrieving specs from model page.'
-       button_func = main
-       args = [brand, model, new_url_text.get(), new_window]
-       
-   enter_url = tk.Button(button_frame, text = "Confirm", command=lambda:loading_window(func_text, button_func, *args))
-   copy_url = tk.Button(button_frame, text = "Copy URL", command=lambda:pyperclip.copy(new_url_text.get()))
-   enter_url.grid(row=0, column=0, padx=30)
-   copy_url.grid(row=0, column=1, padx=30)
-   new_window.grab_set()
+    new_url_label = tk.Label(confirm_url_frame, text = "Confirm That this is the correct url you wish to grab specs from").grid(row=0, column=0)
+    new_url_text = tk.Entry(confirm_url_frame, width=70)
+    new_url_text.grid(row=1, column=0)
+    new_url_text.insert(0, url)
+    button_frame = tk.Frame(confirm_url_frame)
+    button_frame.grid(row=2, column=0)
+    button_func = None
+    func_text = None
+    args = None
+
+    
+    if is_manual == True:
+        func_text = "loading text window"
+        button_func = manual_text_window
+        args = [brand, model, new_url_text.get(), new_window]
+    else:
+        func_text = 'Retrieving specs from model page.'
+        button_func = main
+        args = [brand, model, new_url_text.get(), new_window]
+        
+    enter_url = tk.Button(button_frame, text = "Confirm", command=lambda:loading_window(func_text, button_func, *args))
+    copy_url = tk.Button(button_frame, text = "Copy URL", command=lambda:pyperclip.copy(new_url_text.get()))
+    enter_url.grid(row=0, column=0, padx=30)
+    copy_url.grid(row=0, column=1, padx=30)
+    new_window.grab_set()
     
 # #To help inserting values multiple times in the list.
 def insertMultiple(arr, index, val, quantity):
