@@ -291,8 +291,11 @@ def choose_data_source():
    pdf = tk.BooleanVar()
 
    manual_check = tk.Checkbutton(data_source_frame, text= "Manual Text Entry", variable=manual_text, onvalue=True, offvalue=False)
-
-   manual_check.grid(row=0, column=0)
+   web_check = tk.Checkbutton(data_source_frame, text="Web Scraping", variable=web_scrape, onvalue=True, offvalue= False )
+   pdf_check = tk.Checkbutton(data_source_frame, text= "PDF", variable=pdf, onvalue=True, offvalue=False)
+   manual_check.grid(row=0, column=0, sticky="nsew")
+   web_check.grid(row=1, column=0, sticky="nsew")
+   pdf_check.grid(row=2, column=0, sticky="nsew")
 
 
 
