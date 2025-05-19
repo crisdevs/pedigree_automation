@@ -268,6 +268,35 @@ def get_pedigree_answers(brand, model, data, url):
     final_pedigree_specs = format_pedigree_answer(pedigree_answers)
     return final_pedigree_specs
 
+
+def choose_data_source():
+   data_source_win = tk.Toplevel(root)
+   data_source_win.geometry('500x500')
+   # Bring to front
+   data_source_win.lift()          
+   # Force focus
+   data_source_win.focus_force()    
+   # Prevents interaction with main window
+   data_source_win.grab_set()
+   data_source_win.columnconfigure(0, weight=1)
+   data_source_win.rowconfigure(0, weight=1)   
+   
+   data_source_frame = tk.Frame(data_source_win)
+   data_source_frame.grid(row=0, column=0, sticky="nsew")
+   data_source_frame.columnconfigure(0, weight=1)
+   data_source_frame.rowconfigure(0, weight=1)
+
+   manual_text = tk.BooleanVar()
+   web_scrape = tk.BooleanVar()
+   pdf = tk.BooleanVar()
+
+   manual_check = tk.Checkbutton(data_source_frame, text= "Manual Text Entry", variable=manual_text, onvalue=True, offvalue=False)
+
+   manual_check.grid(row=0, column=0)
+
+
+
+
 def main(brand, model, product_link, prev_window):
   prev_window.destroy()
   
@@ -372,17 +401,18 @@ brandInput.current(0)
 brandInput.config(state='readonly')
 modelLabel = Label(search_frame, text="Model")
 modelInput = Entry(search_frame, width = 23)
-is_manual = BooleanVar()
-manual_text_mode = Radiobutton(root, text = "Manual text mode", variable = is_manual, value=True)
-web_scraping_mode = Radiobutton(root, text = "Web Scraping Mode", variable =is_manual, value=False)
+# is_manual = BooleanVar()
+# manual_text_mode = Radiobutton(root, text = "Manual text mode", variable = is_manual, value=True)
+# web_scraping_mode = Radiobutton(root, text = "Web Scraping Mode", variable =is_manual, value=False)
 
 brandLabel.grid(row=0,column=0)
 brandInput.grid(row=1,column=0)
 modelLabel.grid(row=2,column=0)
 modelInput.grid(row=3,column=0)
-manual_text_mode.grid(row=4, column=0)
-web_scraping_mode.grid(row=5, column=0)
+# manual_text_mode.grid(row=4, column=0)
+# web_scraping_mode.grid(row=5, column=0)
 
 
-searchButton = tk.Button(search_frame, text="Search", command=lambda:searchWithBrandModel(brandInput.get().lower(), modelInput.get(), is_manual.get())).grid(row=4, column=0, pady=10)
+# searchButton = tk.Button(search_frame, text="Search", command=lambda:searchWithBrandModel(brandInput.get().lower(), modelInput.get(), is_manual.get())).grid(row=4, column=0, pady=10)
+searchButton = tk.Button(search_frame, text="Choose Data Source", command=choose_data_source).grid(row=4, column=0, pady=10)
 root.mainloop()
