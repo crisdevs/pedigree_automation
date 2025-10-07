@@ -38,7 +38,7 @@ tv_questions = tv_questions.split('\t')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
-    loading.geometry('900x200')
+    loading.geometry('500x100')
     #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
@@ -92,10 +92,9 @@ def get_url(brand, model):
     return url
 
 def manual_text_window(brand, model, url, prev_window):
-    print(url)
     prev_window.destroy()
     manual_text_win = tk.Toplevel(root)
-    manual_text_win.geometry('1000x1000')
+    manual_text_win.geometry('500x500')
     manual_text_win.rowconfigure(0, weight=1)
     manual_text_win.columnconfigure(0, weight=1)
     manual_text_win.lift()          
@@ -131,7 +130,7 @@ def searchWithBrandModel (brand, model, is_manual):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
-   new_window.geometry('1500x250')
+   new_window.geometry('800x100')
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
@@ -204,7 +203,7 @@ def google_search(query, api_key, cse_id):
 def ask_chatgpt(prompt):
     client = OpenAI(api_key= api_keys['chat_gpt'])
     completion =  client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {
@@ -224,18 +223,17 @@ def format_pedigree_answer(answer):
   final_pedigree_specs_arr = []
   #This was a quick way I found to remove spaces found at the start of each of the answers returned from chatgpt
   for i in pedigree_specs_arr:
-        #If the first character was a space in the list
-        if i[0] == " ":
-            #Append the character after the space in the new list which should be the actual start of the answer
-            final_pedigree_specs_arr.append(i[1:])
-        #If the first character was not a space then just add to the final list
+        if len(i) <= 1:
+            final_pedigree_specs_arr.append(" ")
         else:
-            final_pedigree_specs_arr.append(i)
+            final_pedigree_specs_arr.append(i.strip())
+  print(final_pedigree_specs_arr)
   #Add multiple spaces so that answers will be under the right question in excel
   insertMultiple(final_pedigree_specs_arr, 1, " ", 2)
   insertMultiple(final_pedigree_specs_arr, 4, " ", 3)
   insertMultiple(final_pedigree_specs_arr, 20, " ", 12)
   insertMultiple(final_pedigree_specs_arr, 33, " ", 5)
+  print(final_pedigree_specs_arr)
   #Make the list into a string again but seperated by tabs(cells) for excel
   final_pedigree_specs = "\t".join(final_pedigree_specs_arr)
   
@@ -249,7 +247,7 @@ def get_spec_info(brand, product_link):
   driver.get(product_link)
   time.sleep(2)
   #Get the xpath from the function. Driver needs to be passed for some of the models since we might need to click a button for some of them.
-  spec_path = brand_logic(brand, driver)
+#   spec_path = brand_logic(brand, driver)
   #spec_path[0] = By.XPATH or BY.TAG_NAME, spec_path[1] = element xpath(Reference of html element of specs) or 'body'
 #   product_specs = driver.find_element(spec_path[0], spec_path[1]).get_attribute('textContent')
   product_specs = driver.find_element(By.TAG_NAME, "body").get_attribute('textContent')
@@ -270,7 +268,7 @@ def get_pedigree_answers(brand, model, data, url):
     file.close()
     # spec_obj['specs']
     pedigree_answers = ask_chatgpt(f"""{data}\n I have provided some unfiltered data web scraped from the {brand} {model} TV product page. Based off of this data can you answer the following questions and please only provide the answers separated by commas and exclude the question numbers. 
-                                    For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. Here are the questions:\n{pedigree_questions}""")
+                                    For each question there will be a list of directions on how to answer each question inside parentheses. Please follow those directions and do not create any data that is not listed in the web scraped data. It is important that you answer all of the 16 questions. Here are the questions:\n{pedigree_questions}""")
     #Add the link of the url used to the answers
     pedigree_answers += f', {url}'
     #Format answers
@@ -294,7 +292,7 @@ def main(brand, model, product_link, prev_window):
 def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
-    result_window.geometry('1400x1400')
+    result_window.geometry('600x800')
     result_window.iconbitmap('CR_logo.ico')
     # Bring to front
     result_window.lift()          
@@ -343,31 +341,8 @@ def open_result_window (results):
 
 root = tk.Tk()
 
-# # Create the menu bar
-# menu_bar = tk.Menu(root)
-
-# # Create "File" menu
-# file_menu = tk.Menu(menu_bar, tearoff=0)
-# file_menu.add_command(label="New")
-# file_menu.add_command(label="Open")
-# file_menu.add_separator()
-# file_menu.add_command(label="Exit")
-
-# # Add "File" menu to menu bar
-# menu_bar.add_cascade(label="File", menu=file_menu)
-
-# # Create "Help" menu
-# help_menu = tk.Menu(menu_bar, tearoff=0)
-# help_menu.add_command(label="About", command=lambda: messagebox.showinfo("About", "Tkinter Menu Example v1.0"))
-
-# # Add "Help" menu to menu bar
-# menu_bar.add_cascade(label="Help", menu=help_menu)
-
-# # Attach menu bar to window
-# root.config(menu=menu_bar)
-
 #Set window size
-root.geometry('700x600')
+root.geometry('300x250')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
