@@ -28,7 +28,8 @@ brands = [
   'Hisense',
   'Roku',
   'Toshiba',
-  'Philips'
+  'Philips',
+  'Amazon'
 ]
 
 with open('./files/unfiltered_pedigree_questions.txt', 'r') as file:
@@ -38,7 +39,7 @@ tv_questions = tv_questions.split('\t')
 def loading_window(task_name, task, *args):
     loading = tk.Toplevel(root)
     #Set up window size for loading window
-    loading.geometry('500x100')
+    loading.geometry('1000x300')
     #Set up layout of window
     loading.columnconfigure(0, weight=1)
     loading.rowconfigure(0, weight=1)
@@ -94,7 +95,7 @@ def get_url(brand, model):
 def manual_text_window(brand, model, url, prev_window):
     prev_window.destroy()
     manual_text_win = tk.Toplevel(root)
-    manual_text_win.geometry('500x500')
+    manual_text_win.geometry('1000x1000')
     manual_text_win.rowconfigure(0, weight=1)
     manual_text_win.columnconfigure(0, weight=1)
     manual_text_win.lift()          
@@ -130,7 +131,7 @@ def searchWithBrandModel (brand, model, is_manual):
    url = get_url(brand, model)
    
    new_window = tk.Toplevel(root)
-   new_window.geometry('800x100')
+   new_window.geometry('1500x200')
    new_window.title('URL Entry')
    new_window.columnconfigure(0, weight=1)
    new_window.rowconfigure(0, weight=1)
@@ -292,7 +293,7 @@ def main(brand, model, product_link, prev_window):
 def open_result_window (results):
     # results = main(brand, model, product_link)
     result_window = tk.Toplevel(root)
-    result_window.geometry('600x800')
+    result_window.geometry('1250x1300')
     result_window.iconbitmap('CR_logo.ico')
     # Bring to front
     result_window.lift()          
@@ -342,7 +343,7 @@ def open_result_window (results):
 root = tk.Tk()
 
 #Set window size
-root.geometry('300x250')
+root.geometry('700x700')
 root.title('ChatGPT Pedigree Taker')
 root.iconbitmap('CR_logo.ico')
 root.columnconfigure(0, weight=1)
